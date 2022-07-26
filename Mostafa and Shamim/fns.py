@@ -143,10 +143,10 @@ def max_sum(clause):
     elif clause.func == Mul:
         if isinstance(clause.args[0], Number) and clause.args[0] > 0:
             max = max + int(clause.args[0])
-        elif isinstance(clause.args[0], Number) and term.args[0] < 0:
+        elif isinstance(clause.args[0], Number) and clause.args[0] < 0:
             pass
         else:
-            max + max + 1
+            max = max + 1
 
     elif clause.func == Symbol:
         max = 1
