@@ -1,3 +1,4 @@
+from re import S
 import numpy as np
 from sympy import (
     Add,
@@ -26,24 +27,26 @@ def create_dicts(m):
     m_dict = {}
     for i, value in enumerate(m_bin):
         m_dict[i] = int(value)
-    #print('m',len(m_dict))
-    #print(m_dict)
+    # print('m',len(m_dict))
+    # print(m_dict)
 
     p_dict = {}
     p_dict[0] = 1
     for i in range(1, n_p):
         p_dict[i] = Symbol("p" + str(i))
-    p_dict[n_m - 1] = 1  # length half of m is being held.here need some generializtion to check out bit length of p and q optimum.
-    #print('p', len(p_dict))
-    #print(p_dict)
+    p_dict[
+        n_m - 1
+    ] = 1  # length half of m is being held.here need some generializtion to check out bit length of p and q optimum.
+    # print('p', len(p_dict))
+    # print(p_dict)
 
     q_dict = {}
     q_dict[0] = 1
     for i in range(1, n_q):
         q_dict[i] = Symbol("q" + str(i))
     q_dict[n_q - 1] = 1
-    #print('q', len(q_dict))
-    #print(q_dict)
+    # print('q', len(q_dict))
+    # print(q_dict)
 
     z_dict = {}
     for i in range(n_c):
@@ -77,7 +80,7 @@ def create_clause(m, p, q, z):
 
         if type(clause) == int:
             clause = sympify(clause)
-            
+
         if clause != 0:
             max_sum1 = max_sum(clause)
             if max_sum1 != 0:
@@ -98,7 +101,7 @@ def create_clause(m, p, q, z):
     return clauses
 
 
-def rule_1(clause, expression):
+def rule_3(clause, expression):
     negative = []
 
     for t in clause.args:
@@ -115,15 +118,15 @@ def rule_1(clause, expression):
 
 
 def max_sum(clause):
-    '''
+    """
     Calculates the maximum value a clause could attain.
 
     Args:
         clause: a sympy expression for the given clasue.
 
-    Returns: 
-        max [int]: the maximum value a clause could attain. 
-    '''
+    Returns:
+        max [int]: the maximum value a clause could attain.
+    """
     max = 0
     if clause.func == Add:
         for t in clause.args:
@@ -238,54 +241,47 @@ def retrieve_dict(clause_final):
 
 
 def rule_2(clause, expression):
-    x = Symbol('x')
-    y = Symbol('y')
+    x = Symbol("x")
+    y = Symbol("y")
     rule = x + y - 1
 
     clause_vars = list(clause.free_symbols)
 
-
-    if (
-        clause.func == Add
-        and len(clause.args) == 3
-        and len(clause_vars) == 2
-    ):
+    if clause.func == Add and len(clause.args) == 3 and len(clause_vars) == 2:
         sub_clause = clause.subs(
             {
                 clause_vars[0]: x,
                 clause_vars[1]: y,
             }
         )
-        
+
         if sub_clause - rule == 0:
             expression[clause_vars[0] * clause_vars[1]] = 0
             if "q" in str(clause_vars[0]):
-                expression[clause_vars[0]] = (
-                    1 - clause_vars[1]
-                )
+                expression[clause_vars[0]] = 1 - clause_vars[1]
             else:
-                expression[clause_vars[1]] = (
-                    1 - clause_vars[0]
-                )
+                expression[clause_vars[1]] = 1 - clause_vars[0]
     return expression
 
 
-def rule_3(clause, expression):
-    if (
-        clause.func == Add
-        and len(clause.args) == 2
-        and len(list(clause.free_symbols)) == 2
-    ):
+def rule_1(clause, expression):
+    x = Symbol("x")
+    y = Symbol("y")
+    rule = x * y - 1
+    clause_vars = list(clause.free_symbols)
+    
+    if clause.func == Add and len(clause.args) == 2 and len(clause_vars) == 2:
         sub_clause = clause.subs(
             {
-                list(clause.free_symbols)[0]: Symbol("x"),
-                list(clause.free_symbols)[1]: Symbol("y"),
+                clause_vars[0]: x,
+                clause_vars[1]: y,
             }
         )
-        rule = Symbol("x") * Symbol("y") - 1
+
         if sub_clause - rule == 0:
-            expression[list(clause.free_symbols)[0]] = 1
-            expression[list(clause.free_symbols)[0]] = 1
+            expression[clause_vars[0]] = 1
+            expression[clause_vars[1]] = 1
+
     return expression
 
 
