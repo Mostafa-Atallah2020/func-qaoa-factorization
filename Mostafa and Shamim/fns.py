@@ -60,7 +60,7 @@ def create_dicts(m):
                     else:
                         z_dict[(j, i)] = Symbol("z" + str(j) + str(i))
 
-        #z_dict[(len(m_bin) - 4, len(m_bin) - 1)] = 0
+        z_dict[(len(m_bin) - 4, len(m_bin) - 1)] = 0
     return m_dict, p_dict, q_dict, z_dict
 
 
@@ -77,6 +77,7 @@ def create_clause(m, p, q, z):
 
         if type(clause) == int:
             clause = sympify(clause)
+            
         if clause != 0:
             max_sum1 = max_sum(clause)
             if max_sum1 != 0:
@@ -237,27 +238,34 @@ def retrieve_dict(clause_final):
 
 
 def rule_2(clause, expression):
+    x = Symbol('x')
+    y = Symbol('y')
+    rule = x + y - 1
+
+    clause_vars = list(clause.free_symbols)
+
+
     if (
         clause.func == Add
         and len(clause.args) == 3
-        and len(list(clause.free_symbols)) == 2
+        and len(clause_vars) == 2
     ):
         sub_clause = clause.subs(
             {
-                list(clause.free_symbols)[0]: Symbol("x"),
-                list(clause.free_symbols)[1]: Symbol("y"),
+                clause_vars[0]: x,
+                clause_vars[1]: y,
             }
         )
-        rule = Symbol("x") + Symbol("y") - 1
+        
         if sub_clause - rule == 0:
-            expression[list(clause.free_symbols)[0] * list(clause.free_symbols)[1]] = 0
-            if "q" in str(list(clause.free_symbols)[0]):
-                expression[list(clause.free_symbols)[0]] = (
-                    1 - list(clause.free_symbols)[1]
+            expression[clause_vars[0] * clause_vars[1]] = 0
+            if "q" in str(clause_vars[0]):
+                expression[clause_vars[0]] = (
+                    1 - clause_vars[1]
                 )
             else:
-                expression[list(clause.free_symbols)[1]] = (
-                    1 - list(clause.free_symbols)[0]
+                expression[clause_vars[1]] = (
+                    1 - clause_vars[0]
                 )
     return expression
 
