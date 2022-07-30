@@ -56,34 +56,36 @@ def create_dicts(m):
     return m_dict, p_dict, q_dict, z_dict
 
 
-def create_clause(m, p, q, z):
-    clauses = []
-    n = len(m) + int(np.ceil(len(m) / 2)) - 1
+def create_clause(m,p,q,z):
+    clauses=[]
+    n=len(m)+int(np.ceil(len(m)/2)) -1
     for i in range(n):
-        clause = 0
-        for j in range(i + 1):
-            clause += q.get(j, 0) * p.get(i - j, 0)
-        clause += -m.get(i, 0)
-        for j in range(i + 1):
+        clause=0
+        for j in range(i+1):
+            clause+=q.get(j,0) * p.get(i-j,0)
+        #clause  += - m.get(i,0)
+        for j in range(i+1):
             clause += z.get((j, i), 0)
-
+        
         if type(clause) == int:
             clause = sympify(clause)
-
         if clause != 0:
-            max_sum1 = max_sum(clause)
-            if max_sum1 != 0:
+            max_sum1=max_sum(clause)
+            if max_sum1 !=0  :
                 max_carry = int(np.floor(np.log2(max_sum1)))
-            else:
-                max_carry = 0
-            for j in range(i + max_carry + 2, n + 1):
-                if z.get((i, j), 0) != 0:
+            else : 
+                max_carry  = 0
+        for j in range(len(z)):
+            if j-i > max_carry:
+                if z.get((i-1, j), 0) != 0:
                     z[(i, j)] = 0
 
-        for j in range(i, 2 * i + 1):
-            clause += -(2 ** (j - i)) * z.get((i, j), 0)
 
-        if clause == 0:
+        for j in range(i, 2*i+1):
+            clause += - 2**(j-i) * z.get((i, j), 0) 
+
+        
+        if clause ==0 :
             clause = sympify(clause)
         clauses.append(clause)
 
