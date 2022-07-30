@@ -48,22 +48,11 @@ def create_dicts(m):
     # print('q', len(q_dict))
     # print(q_dict)
 
-    z_dict = {}
-    for i in range(n_c):
-        for j in range(i + 1):
-            if i != j:
-                if i >= n_m:
-                    pass
-                elif j == 0:
-                    pass
-                else:
-                    if i - j >= n_q - 1:
-                        z_dict[(j, i)] = 0
-
-                    else:
-                        z_dict[(j, i)] = Symbol("z" + str(j) + str(i))
-
-        z_dict[(len(m_bin) - 4, len(m_bin) - 1)] = 0
+    z_dict={}
+    for i in range(1,len(m_bin)-1):
+        for j in range(i,i+len(bin(i)[2:][::-1])+1):
+            if i!= j  and j <= len(m_bin):
+                z_dict[(i, j)] =  Symbol('z'+str(i)+str(j))
     return m_dict, p_dict, q_dict, z_dict
 
 
@@ -269,7 +258,7 @@ def rule_1(clause, expression):
     y = Symbol("y")
     rule = x * y - 1
     clause_vars = list(clause.free_symbols)
-    
+
     if clause.func == Add and len(clause.args) == 2 and len(clause_vars) == 2:
         sub_clause = clause.subs(
             {
