@@ -301,20 +301,33 @@ def rule_4(clause, expression):
     return expression
 
 
-def rule_5(clause, known_expressions):
+def rule_5(clause, expr):
+    constant = 0
+    if clause.func == Add:
+        for term in clause.args:
+            variables = list(term.free_symbols)
 
-    if clause.func == Add and len(clause.args) == 2:
-        if len(clause.args[0].free_symbols) == 0:
-            constant_a = clause.args[0]
-            if clause.args[1].func == Mul:
-                constant_b = clause.args[1].args[0]
-                symbol = clause.args[1] / constant_b
-                if isinstance(constant_a, Number) and isinstance(constant_b, Number):
-                    if constant_a > 0 or constant_b < 0:
+            if len(variables) == 0:
+                constant += term
 
-                        known_expressions[symbol] = 1
-    return known_expressions
+            elif len(variables) == 1:
+                if term.func == Symbol:
+                    continue
+                if term.args[0] == variables[0] and term.args[1] != 0:
+                    break
+                elif term.args[1] == variables[0] and term.args[0] != 0:
+                    break
 
+            elif len(variables) == 2:
+                if len(term.args) != 2:
+                    break
+
+        else:
+            if constant == -(len(clause.args) - 1):
+                for term in clause.args:
+                    if term != constant:
+                        expr[term] = 1
+    return expr
 
 def simplify_clause(clause, equation, i):
 
