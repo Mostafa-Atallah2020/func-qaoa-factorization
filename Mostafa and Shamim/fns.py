@@ -273,21 +273,31 @@ def rule_1(clause, expression):
 
 
 def rule_4(clause, expression):
-    count = 0
-    if clause.func == Add and max_sum(clause) == len(list(clause.free_symbols)):
-        for t in clause.args:
-            if t.func != Mul:
-                expression[t] = 0
+    constant = 0
+    if clause.func == Add:
+        for term in clause.args:
+            variables = list(term.free_symbols)
 
-    else:
-        for t in clause.args:
-            if isinstance(t, Number):
-                count = count + t
-        if clause.func == Add and len(list(clause.free_symbols)) == -count:
-            for t in clause.args:
-                if t != count:
-                    expression[t] = 1
+            if len(variables) == 0:
+                constant += term
 
+            elif len(variables) == 1:
+                if term.func == Symbol:
+                    continue
+                if term.args[0] == variables[0] and term.args[1] != 0:
+                    break
+                elif term.args[1] == variables[0] and term.args[0] != 0:
+                    break
+
+            elif len(variables) == 2:
+                # This means there is a coefficient other than 1
+                if len(term.args) != 2:
+                    break
+
+        else:
+            if constant == 0:
+                for term in clause.args:
+                    expression[term] = 0
     return expression
 
 
