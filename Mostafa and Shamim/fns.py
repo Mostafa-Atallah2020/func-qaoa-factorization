@@ -93,18 +93,14 @@ def create_clause(m,p,q,z):
 
 
 def rule_3(clause, expression):
-    negative = []
-
-    for t in clause.args:
-        if t.func == Mul and isinstance(t.args[0], Number) and t.args[0] < 0:
-            negative.append(t)
-
-    if len(negative) > 0:
-        for t in negative:
-            if -t.args[0] >= max_sum(clause):
-                var = t / t.args[0]
-                expression[var] = 0
-
+    if clause.func == Add and len(clause.args) == 2:
+        if len(clause.args[0].free_symbols) == 0:
+            constant_a = clause.args[0]
+            if clause.args[1].func == Mul:
+                constant_b = clause.args[1].args[0]
+                symbol = clause.args[1] / constant_b
+                if constant_a > 0 or constant_b < 0:
+                    expression[symbol] = 1
     return expression
 
 
