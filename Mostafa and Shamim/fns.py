@@ -244,10 +244,12 @@ def rule_2(clause, expression):
 
         if sub_clause - rule == 0:
             expression[clause_vars[0] * clause_vars[1]] = 0
+            '''
             if "q" in str(clause_vars[0]):
                 expression[clause_vars[0]] = 1 - clause_vars[1]
             else:
                 expression[clause_vars[1]] = 1 - clause_vars[0]
+            '''
     return expression
 
 
