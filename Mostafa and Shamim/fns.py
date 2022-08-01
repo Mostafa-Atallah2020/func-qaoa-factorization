@@ -121,6 +121,8 @@ def max_sum(clause):
                 max += int(t)
 
             elif t.func == Mul:
+                if isinstance(t.args[0], Symbol):
+                    max = max + 1
                 if isinstance(t.args[0], Number) and t.args[0] > 0:
                     max = max + (int(t.args[0]))
                 if isinstance(t.args[0], Number) and t.args[0] < 0:
