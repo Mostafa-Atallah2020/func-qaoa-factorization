@@ -1,4 +1,3 @@
-from re import S
 import numpy as np
 from sympy import (
     Add,
@@ -48,44 +47,42 @@ def create_dicts(m):
     # print('q', len(q_dict))
     # print(q_dict)
 
-    z_dict={}
-    for i in range(1,len(m_bin)-1):
-        for j in range(i,i+len(bin(i)[2:][::-1])+1):
-            if i!= j  and j <= len(m_bin):
-                z_dict[(i, j)] =  Symbol('z'+str(i)+str(j))
+    z_dict = {}
+    for i in range(1, len(m_bin) - 1):
+        for j in range(i, i + len(bin(i)[2:][::-1]) + 1):
+            if i != j and j <= len(m_bin):
+                z_dict[(i, j)] = Symbol("z" + str(i) + str(j))
     return m_dict, p_dict, q_dict, z_dict
 
 
-def create_clause(m,p,q,z):
-    clauses=[]
-    n=len(m)+int(np.ceil(len(m)/2)) -1
+def create_clause(m, p, q, z):
+    clauses = []
+    n = len(m) + int(np.ceil(len(m) / 2)) - 1
     for i in range(n):
-        clause=0
-        for j in range(i+1):
-            clause+=q.get(j,0) * p.get(i-j,0)
-        #clause  += - m.get(i,0)
-        for j in range(i+1):
+        clause = 0
+        for j in range(i + 1):
+            clause += q.get(j, 0) * p.get(i - j, 0)
+        # clause  += - m.get(i,0)
+        for j in range(i + 1):
             clause += z.get((j, i), 0)
-        
+
         if type(clause) == int:
             clause = sympify(clause)
         if clause != 0:
-            max_sum1=max_sum(clause)
-            if max_sum1 !=0  :
+            max_sum1 = max_sum(clause)
+            if max_sum1 != 0:
                 max_carry = int(np.floor(np.log2(max_sum1)))
-            else : 
-                max_carry  = 0
+            else:
+                max_carry = 0
         for j in range(len(z)):
-            if j-i > max_carry:
-                if z.get((i-1, j), 0) != 0:
+            if j - i > max_carry:
+                if z.get((i - 1, j), 0) != 0:
                     z[(i, j)] = 0
 
+        for j in range(i, 2 * i + 1):
+            clause += -(2 ** (j - i)) * z.get((i, j), 0)
 
-        for j in range(i, 2*i+1):
-            clause += - 2**(j-i) * z.get((i, j), 0) 
-
-        
-        if clause ==0 :
+        if clause == 0:
             clause = sympify(clause)
         clauses.append(clause)
 
@@ -153,23 +150,10 @@ def clause_final(clauses):
     expression = {}
 
     for f in range(3):
-        # if f==0 :
-        #  for p in range(len(clauses)):
-        #     clauses[p] = expand(sympify(clauses[p]**2))
-
-        #      for i in range(2,5):
-        #          clauses[p]=sympify(str(clauses[p]) . replace('**'+str(i),''))
-        # else :
-        #   pass
         for i in range(1, 6):
-            # clauses = create_clause(m_dict, p_dict, q_dict, z_dict)
-            # for c in range(len(clauses)):
-            #   print(clauses[c])
             for p in range(len(clauses)):
-
                 clauses[p], expression = simplify_clause(clauses[p], expression, i)
 
-    #   print(clauses[p])
     clauses1 = []
     for p in range(len(clauses)):
         clauses1.append(clauses[p] ** 2)
@@ -246,12 +230,12 @@ def rule_2(clause, expression):
 
         if sub_clause - rule == 0:
             expression[clause_vars[0] * clause_vars[1]] = 0
-            '''
+            """
             if "q" in str(clause_vars[0]):
                 expression[clause_vars[0]] = 1 - clause_vars[1]
             else:
                 expression[clause_vars[1]] = 1 - clause_vars[0]
-            '''
+            """
     return expression
 
 
@@ -333,6 +317,7 @@ def rule_5(clause, expr):
                         expr[term] = 1
     return expr
 
+
 def simplify_clause(clause, equation, i):
 
     clause = clause.subs(equation).expand()
@@ -368,16 +353,11 @@ def simplify_clause(clause, equation, i):
         equation = rule_4(clause, equation)
         clause = clause.subs(equation).expand()
         num = max_sum(clause)
-        # print(clause,equation)
 
     if i == 5:
         equation = rule_5(clause, equation)
         clause = clause.subs(equation).expand()
         num = max_sum(clause)
-
-        #  print(clause,equation)
-        # equation=rule_3(clause,equation)
-    # clause=clause.subs(equation).expand()
 
     return clause, equation
 
