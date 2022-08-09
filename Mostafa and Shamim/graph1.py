@@ -231,8 +231,8 @@ def apply_preprocessing_rules(clauses, verbose=True):
             continue
 
 
-        known_expressions = apply_z_rule_1(clause, known_expressions, verbose)
-        clause = simplify_clause(clause, known_expressions)
+        #known_expressions = apply_z_rule_1(clause, known_expressions, verbose)
+        #clause = simplify_clause(clause, known_expressions)
 
         known_expressions = apply_rule_1(clause, known_expressions, verbose)
         clause = simplify_clause(clause, known_expressions)
@@ -246,11 +246,11 @@ def apply_preprocessing_rules(clauses, verbose=True):
         known_expressions = apply_rules_4_and_5(clause, known_expressions, verbose)
         clause = simplify_clause(clause, known_expressions)
 
-        known_expressions = apply_rule_of_equality(clause, known_expressions, verbose)
-        clause = simplify_clause(clause, known_expressions)
+        #known_expressions = apply_rule_of_equality(clause, known_expressions, verbose)
+        #clause = simplify_clause(clause, known_expressions)
 
-        known_expressions = apply_z_rule_2(clause, known_expressions, verbose)
-        clause = simplify_clause(clause, known_expressions)
+        #known_expressions = apply_z_rule_2(clause, known_expressions, verbose)
+        #clause = simplify_clause(clause, known_expressions)
 
 
     simplified_clauses = []
@@ -634,6 +634,7 @@ def assess_number_of_unknowns(p_dict, q_dict, z_dict):
     non_carry_unknowns = p_unknowns + q_unknowns
     carry_bits = [value for value in z_unknowns if 'z' in str(value) and value not in non_carry_unknowns]
     return len(all_unknowns), len(carry_bits)
+
 
 def get_primes_lower_than_n(n):
     # Source: https://hackernoon.com/prime-numbers-using-python-824ff4b3ea19
