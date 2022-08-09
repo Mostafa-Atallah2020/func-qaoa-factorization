@@ -1,15 +1,18 @@
-'''
+"""
 An alternative approach to generate graph1 of VQF paper https://arxiv.org/abs/1808.08927
 
 It's taken from https://github.com/mstechly/vqf/blob/master/research/2019_05_04_resources_needed/src/
-'''
+"""
 
 import numpy as np
 from sympy import Symbol, Add, Mul, Pow, Number
 from sympy import factor, srepr, sympify
 import pdb
 
-def create_clauses(m_int, true_p_int=None, true_q_int=None, apply_preprocessing=True, verbose=True):
+
+def create_clauses(
+    m_int, true_p_int=None, true_q_int=None, apply_preprocessing=True, verbose=True
+):
     """
     Creates clauses for the VQF algorithm.
     """
@@ -22,18 +25,21 @@ def create_clauses(m_int, true_p_int=None, true_q_int=None, apply_preprocessing=
             q_dict[1] = 1
     clauses = create_basic_clauses(m_dict, p_dict, q_dict, z_dict, apply_preprocessing)
 
-
     if apply_preprocessing:
-        simplified_clauses, known_expressions = run_simplification_loop(clauses, verbose)
-        p_dict, q_dict, z_dict = update_dictionaries(known_expressions, p_dict, q_dict, z_dict)
-    
+        simplified_clauses, known_expressions = run_simplification_loop(
+            clauses, verbose
+        )
+        p_dict, q_dict, z_dict = update_dictionaries(
+            known_expressions, p_dict, q_dict, z_dict
+        )
+
     known_symbols = create_known_symbols_dict(p_dict, q_dict, z_dict)
 
     final_clauses = []
     for clause in clauses:
         final_clauses.append(simplify_clause(clause, known_symbols))
 
-    z_dict = {key:value for key, value in z_dict.items() if value != 0}
+    z_dict = {key: value for key, value in z_dict.items() if value != 0}
 
     # TODO: In principle this might need to be recurrent
     if apply_preprocessing and final_clauses[0] == 0 and len(set(final_clauses)) == 1:
@@ -42,14 +48,22 @@ def create_clauses(m_int, true_p_int=None, true_q_int=None, apply_preprocessing=
             p_dict, q_dict = solve_symmetric_case(p_dict, q_dict)
             number_of_unknowns, _ = assess_number_of_unknowns(p_dict, q_dict, z_dict)
             if number_of_unknowns != 0:
-                final_clauses = create_basic_clauses(m_dict, p_dict, q_dict, z_dict, apply_preprocessing)
-                final_clauses, known_expressions = run_simplification_loop(final_clauses, verbose)
-                p_dict, q_dict, z_dict = update_dictionaries(known_expressions, p_dict, q_dict, z_dict)
+                final_clauses = create_basic_clauses(
+                    m_dict, p_dict, q_dict, z_dict, apply_preprocessing
+                )
+                final_clauses, known_expressions = run_simplification_loop(
+                    final_clauses, verbose
+                )
+                p_dict, q_dict, z_dict = update_dictionaries(
+                    known_expressions, p_dict, q_dict, z_dict
+                )
 
     if final_clauses[0] == 0 and len(set(final_clauses)) == 1:
         number_of_unknowns, _ = assess_number_of_unknowns(p_dict, q_dict, z_dict)
         if number_of_unknowns != 0:
-            raise Exception("This probably means this code still needs some polishing :(")
+            raise Exception(
+                "This probably means this code still needs some polishing :("
+            )
 
     for clause in final_clauses:
         if isinstance(clause, Number) and clause != 0:
@@ -58,7 +72,6 @@ def create_clauses(m_int, true_p_int=None, true_q_int=None, apply_preprocessing=
     if verbose:
         for clause in final_clauses:
             print(clause)
-
 
     return p_dict, q_dict, z_dict, final_clauses
 
@@ -72,7 +85,9 @@ def run_simplification_loop(clauses, verbose):
         if verbose:
             print("Preprocessing iteration:", counter)
 
-        new_simplified_clauses, new_known_expressions = apply_preprocessing_rules(simplified_clauses, verbose)
+        new_simplified_clauses, new_known_expressions = apply_preprocessing_rules(
+            simplified_clauses, verbose
+        )
         for new_clause, old_clause in zip(new_simplified_clauses, simplified_clauses):
             if new_clause != old_clause:
                 break
@@ -105,38 +120,36 @@ def create_initial_dicts(m_int, true_p_int=None, true_q_int=None):
         n_p = len(true_p_binary)
 
     if true_q_int is None:
-        n_q = int(np.ceil(len(m_dict)/2))
+        n_q = int(np.ceil(len(m_dict) / 2))
     else:
         true_q_binary = bin(true_q_int)[2:][::-1]
         n_q = len(true_q_binary)
 
-
     for i in range(n_p):
-        p_dict[i] = Symbol('p_'+str(i))
+        p_dict[i] = Symbol("p_" + str(i))
 
     if true_p_int is not None:
-        p_dict[n_p-1] = 1
+        p_dict[n_p - 1] = 1
 
     q_dict = {}
     for i in range(n_q):
-        q_dict[i] = Symbol('q_'+str(i))
+        q_dict[i] = Symbol("q_" + str(i))
 
     if true_q_int is not None:
-        q_dict[n_q-1] = 1
+        q_dict[n_q - 1] = 1
 
-
-    n_c = len(m_dict) + int(np.ceil(len(m_dict)/2)) - 1
+    n_c = len(m_dict) + int(np.ceil(len(m_dict) / 2)) - 1
 
     z_dict = {}
     for i in range(n_c):
-        for j in range(i+1):
-            if i!=j:
+        for j in range(i + 1):
+            if i != j:
                 if i >= n_m:
                     pass
-                elif j==0:
+                elif j == 0:
                     pass
                 else:
-                    z_dict[(j, i)] = Symbol('z_'+str(j)+'_'+str(i))
+                    z_dict[(j, i)] = Symbol("z_" + str(j) + "_" + str(i))
             else:
                 pass
 
@@ -145,21 +158,20 @@ def create_initial_dicts(m_int, true_p_int=None, true_q_int=None):
 
 def create_basic_clauses(m_dict, p_dict, q_dict, z_dict, apply_preprocessing=True):
     clauses = []
-    n_c = len(m_dict) + int(np.ceil(len(m_dict)/2)) - 1
+    n_c = len(m_dict) + int(np.ceil(len(m_dict) / 2)) - 1
     for i in range(n_c):
         clause = 0
-        for j in range(i+1):
-            clause += q_dict.get(j, 0) * p_dict.get(i-j, 0)
+        for j in range(i + 1):
+            clause += q_dict.get(j, 0) * p_dict.get(i - j, 0)
         clause += -m_dict.get(i, 0)
 
-        for j in range(i+1):
+        for j in range(i + 1):
             clause += z_dict.get((j, i), 0)
         if type(clause) == int:
             clause = sympify(clause)
         if apply_preprocessing and clause != 0:
             # This part exists in order to limit the number of z terms.
             max_sum = get_max_sum_from_clause(clause)
-
 
             if max_sum != 0:
                 max_carry = int(np.floor(np.log2(max_sum)))
@@ -168,9 +180,9 @@ def create_basic_clauses(m_dict, p_dict, q_dict, z_dict, apply_preprocessing=Tru
             for j in range(i + max_carry + 1, n_c):
                 if z_dict.get((i, j), 0) != 0:
                     z_dict[(i, j)] = 0
-        
+
         for j in range(1, n_c):
-            clause += - 2**j * z_dict.get((i, i+j), 0)
+            clause += -(2 ** j) * z_dict.get((i, i + j), 0)
         if clause == 0:
             clause = sympify(clause)
         clauses.append(clause)
@@ -211,16 +223,16 @@ def solve_symmetric_case(p_dict, q_dict):
         return p_dict, q_dict
 
     for key in p_dict.keys():
-            if type(p_dict[key]) != int or type(q_dict[key]) != int:
-                if p_dict[key] + q_dict[key] == 1:
-                    p_dict[key] = 1
-                    q_dict[key] = 0
+        if type(p_dict[key]) != int or type(q_dict[key]) != int:
+            if p_dict[key] + q_dict[key] == 1:
+                p_dict[key] = 1
+                q_dict[key] = 0
     return p_dict, q_dict
 
 
 def apply_preprocessing_rules(clauses, verbose=True):
     known_expressions = {}
-    counter = 0 
+    counter = 0
 
     for clause in clauses:
         clause = simplify_clause(clause, known_expressions)
@@ -230,9 +242,8 @@ def apply_preprocessing_rules(clauses, verbose=True):
         if clause == 0:
             continue
 
-
-        #known_expressions = apply_z_rule_1(clause, known_expressions, verbose)
-        #clause = simplify_clause(clause, known_expressions)
+        # known_expressions = apply_z_rule_1(clause, known_expressions, verbose)
+        # clause = simplify_clause(clause, known_expressions)
 
         known_expressions = apply_rule_1(clause, known_expressions, verbose)
         clause = simplify_clause(clause, known_expressions)
@@ -246,12 +257,11 @@ def apply_preprocessing_rules(clauses, verbose=True):
         known_expressions = apply_rules_4_and_5(clause, known_expressions, verbose)
         clause = simplify_clause(clause, known_expressions)
 
-        #known_expressions = apply_rule_of_equality(clause, known_expressions, verbose)
-        #clause = simplify_clause(clause, known_expressions)
+        # known_expressions = apply_rule_of_equality(clause, known_expressions, verbose)
+        # clause = simplify_clause(clause, known_expressions)
 
-        #known_expressions = apply_z_rule_2(clause, known_expressions, verbose)
-        #clause = simplify_clause(clause, known_expressions)
-
+        # known_expressions = apply_z_rule_2(clause, known_expressions, verbose)
+        # clause = simplify_clause(clause, known_expressions)
 
     simplified_clauses = []
     for clause in clauses:
@@ -265,10 +275,12 @@ def simplify_clause(clause, known_expressions):
     if simplified_clause.func == Add:
         # Simplifies x**2 -> x, since the variables we use are binary.
         for term in simplified_clause.args:
-            if term.func == Mul and 'Pow' in srepr(term):
+            if term.func == Mul and "Pow" in srepr(term):
                 for subterm in term.args:
                     if subterm.func == Pow:
-                        simplified_clause = simplified_clause.subs({subterm: subterm.args[0]})
+                        simplified_clause = simplified_clause.subs(
+                            {subterm: subterm.args[0]}
+                        )
 
             if term.func == Pow:
                 simplified_clause = simplified_clause - term + term.args[0]
@@ -379,7 +391,7 @@ def apply_z_rule_2(clause, known_expressions, verbose=False):
                 pass
 
         else:
-            if 'q' in str(odd_terms[0]):
+            if "q" in str(odd_terms[0]):
                 non_q_index = 1
             else:
                 non_q_index = 0
@@ -388,12 +400,11 @@ def apply_z_rule_2(clause, known_expressions, verbose=False):
 
             if type(variable_0) == Mul:
                 if isinstance(variable_0.args[0], Number):
-                    variable_0 = variable_0/variable_0.args[0]
+                    variable_0 = variable_0 / variable_0.args[0]
 
             if type(variable_1) == Mul:
                 if isinstance(variable_1.args[0], Number):
-                    variable_1 = variable_1/variable_1.args[0]
-
+                    variable_1 = variable_1 / variable_1.args[0]
 
             new_known_expressions[variable_1] = variable_0
 
@@ -430,18 +441,14 @@ def apply_z_rule_2(clause, known_expressions, verbose=False):
             new_term = odd_terms[indices[0]] * odd_terms[indices[1]]
             if isinstance(new_term.args[0], Number):
                 new_term = new_term / new_term.args[0]
-            if 'Pow' in srepr(new_term):
+            if "Pow" in srepr(new_term):
                 new_term = simplify_clause(new_term, {})
             new_known_expressions[new_term] = 0
-            
-
- 
 
     if len(new_known_expressions) != 0:
         known_expressions = {**known_expressions, **new_known_expressions}
         if verbose:
             print("Z rule 2 applied:", new_known_expressions)
-
 
     return known_expressions
 
@@ -457,14 +464,18 @@ def apply_rule_of_equality(clause, known_expressions, verbose=False):
         elif isinstance(clause.args[1], Number):
             known_expressions[clause.args[0]] = -clause.args[1]
         else:
-            if 'q' in str(clause.args[0]):
+            if "q" in str(clause.args[0]):
                 non_q_index = 1
             else:
                 non_q_index = 0
-            if '-' in str(clause.args[1 - non_q_index]):
-                known_expressions[clause.args[non_q_index]] = -clause.args[1 - non_q_index]
+            if "-" in str(clause.args[1 - non_q_index]):
+                known_expressions[clause.args[non_q_index]] = -clause.args[
+                    1 - non_q_index
+                ]
             else:
-                known_expressions[-clause.args[non_q_index]] = clause.args[1 - non_q_index]
+                known_expressions[-clause.args[non_q_index]] = clause.args[
+                    1 - non_q_index
+                ]
 
     elif clause.func == Mul:
         if len(clause.free_symbols) == 1:
@@ -480,10 +491,10 @@ def apply_rule_of_equality(clause, known_expressions, verbose=False):
 
 def apply_rule_1(clause, known_expressions, verbose=False):
     clause_variables = list(clause.free_symbols)
-    if clause.func == Add and len(clause.args)==2:
+    if clause.func == Add and len(clause.args) == 2:
         if len(clause_variables) == 2:
-            x = Symbol('x')
-            y = Symbol('y')
+            x = Symbol("x")
+            y = Symbol("y")
             rule = x * y - 1
             substitution = clause.subs({clause_variables[0]: x, clause_variables[1]: y})
             if substitution - rule == 0:
@@ -496,18 +507,20 @@ def apply_rule_1(clause, known_expressions, verbose=False):
 
 def apply_rule_2(clause, known_expressions, verbose=False):
     ## Rule 2:
-    x = Symbol('x')
-    y = Symbol('y')
+    x = Symbol("x")
+    y = Symbol("y")
 
     rule = x + y - 1
     clause_variables = list(clause.free_symbols)
-    if clause.func == Add and len(clause.args) == 3 and len(clause_variables)==2:
+    if clause.func == Add and len(clause.args) == 3 and len(clause_variables) == 2:
         substitution = clause.subs({clause_variables[0]: x, clause_variables[1]: y})
         if substitution - rule == 0:
             if verbose:
-                print("Rule 2 applied!", clause_variables[0], "=", 1 - clause_variables[1])
+                print(
+                    "Rule 2 applied!", clause_variables[0], "=", 1 - clause_variables[1]
+                )
             known_expressions[clause_variables[0] * clause_variables[1]] = 0
-            if 'q' in str(clause_variables[1]):
+            if "q" in str(clause_variables[1]):
                 known_expressions[clause_variables[0]] = 1 - clause_variables[1]
             else:
                 known_expressions[clause_variables[1]] = 1 - clause_variables[0]
@@ -575,20 +588,19 @@ def update_dictionaries(known_expressions, p_dict, q_dict, z_dict):
     for symbol in known_expressions:
         str_symbol = str(symbol)
         symbol_type = str_symbol[0]
-        if '*' in str_symbol:
+        if "*" in str_symbol:
             continue
-        if symbol_type == 'p':
-            symbol_number = int(str_symbol.split('_')[1])
+        if symbol_type == "p":
+            symbol_number = int(str_symbol.split("_")[1])
             p_dict[symbol_number] = known_expressions[symbol]
-        if symbol_type == 'q':
-            symbol_number = int(str_symbol.split('_')[1])
+        if symbol_type == "q":
+            symbol_number = int(str_symbol.split("_")[1])
             q_dict[symbol_number] = known_expressions[symbol]
 
-        if symbol_type == 'z':
-            symbol_number_0 = int(str_symbol.split('_')[1])
-            symbol_number_1 = int(str_symbol.split('_')[2])
+        if symbol_type == "z":
+            symbol_number_0 = int(str_symbol.split("_")[1])
+            symbol_number_1 = int(str_symbol.split("_")[2])
             z_dict[(symbol_number_0, symbol_number_1)] = known_expressions[symbol]
-
 
     known_symbols = create_known_symbols_dict(p_dict, q_dict, z_dict)
     all_known_expressions = {**all_known_expressions, **known_symbols}
@@ -598,20 +610,19 @@ def update_dictionaries(known_expressions, p_dict, q_dict, z_dict):
             if type(value) in [Symbol, Add, Mul]:
                 x_dict[index] = x_dict[index].subs(all_known_expressions)
 
-
     return p_dict, q_dict, z_dict
 
 
 def create_known_symbols_dict(p_dict, q_dict, z_dict):
     known_symbols = {}
     for index, value in p_dict.items():
-        known_symbols[Symbol('p_' + str(index))] = value
+        known_symbols[Symbol("p_" + str(index))] = value
 
     for index, value in q_dict.items():
-        known_symbols[Symbol('q_' + str(index))] = value
+        known_symbols[Symbol("q_" + str(index))] = value
 
     for index, value in z_dict.items():
-        known_symbols[Symbol('z_' + str(index[0]) + "_" + str(index[1]))] = value
+        known_symbols[Symbol("z_" + str(index[0]) + "_" + str(index[1]))] = value
     return known_symbols
 
 
@@ -620,7 +631,7 @@ def extract_unknowns(x_dict):
     list_of_variables = []
     for x in all_values:
         if type(x) != int and len(x.free_symbols) != 0:
-            list_of_variables += (list(x.free_symbols))
+            list_of_variables += list(x.free_symbols)
 
     unknowns = list(set(list_of_variables))
     return unknowns
@@ -632,7 +643,11 @@ def assess_number_of_unknowns(p_dict, q_dict, z_dict):
     z_unknowns = extract_unknowns(z_dict)
     all_unknowns = list(set(p_unknowns + q_unknowns + z_unknowns))
     non_carry_unknowns = p_unknowns + q_unknowns
-    carry_bits = [value for value in z_unknowns if 'z' in str(value) and value not in non_carry_unknowns]
+    carry_bits = [
+        value
+        for value in z_unknowns
+        if "z" in str(value) and value not in non_carry_unknowns
+    ]
     return len(all_unknowns), len(carry_bits)
 
 
@@ -640,14 +655,14 @@ def get_primes_lower_than_n(n):
     # Source: https://hackernoon.com/prime-numbers-using-python-824ff4b3ea19
     primes = []
     for possiblePrime in range(2, n):
-        
-        # Assume number is prime until shown it is not. 
+
+        # Assume number is prime until shown it is not.
         isPrime = True
         for num in range(2, int(possiblePrime ** 0.5) + 1):
             if possiblePrime % num == 0:
                 isPrime = False
                 break
-          
+
         if isPrime:
             primes.append(possiblePrime)
 
