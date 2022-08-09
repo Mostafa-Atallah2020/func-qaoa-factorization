@@ -1,7 +1,7 @@
 '''
 An alternative approach to generate graph1 of VQF paper https://arxiv.org/abs/1808.08927
 
-It's taken from https://github.com/mstechly/vqf/blob/master/research/2019_05_04_resources_needed/src/preprocessing.py
+It's taken from https://github.com/mstechly/vqf/blob/master/research/2019_05_04_resources_needed/src/
 '''
 
 import numpy as np
@@ -634,3 +634,20 @@ def assess_number_of_unknowns(p_dict, q_dict, z_dict):
     non_carry_unknowns = p_unknowns + q_unknowns
     carry_bits = [value for value in z_unknowns if 'z' in str(value) and value not in non_carry_unknowns]
     return len(all_unknowns), len(carry_bits)
+
+def get_primes_lower_than_n(n):
+    # Source: https://hackernoon.com/prime-numbers-using-python-824ff4b3ea19
+    primes = []
+    for possiblePrime in range(2, n):
+        
+        # Assume number is prime until shown it is not. 
+        isPrime = True
+        for num in range(2, int(possiblePrime ** 0.5) + 1):
+            if possiblePrime % num == 0:
+                isPrime = False
+                break
+          
+        if isPrime:
+            primes.append(possiblePrime)
+
+    return primes
