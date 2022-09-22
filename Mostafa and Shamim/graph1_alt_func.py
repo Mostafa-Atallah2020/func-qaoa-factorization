@@ -667,3 +667,8 @@ def get_primes_lower_than_n(n):
             primes.append(possiblePrime)
 
     return primes
+
+def split_list(arr, size):
+
+  for i in range(0, len(arr), size):
+    yield arr[i:i + size]
