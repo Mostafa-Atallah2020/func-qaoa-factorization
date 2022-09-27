@@ -4,10 +4,8 @@ import math
 
 import numpy as np
 
-from graph1_alt_func import get_primes_lower_than_n
-
 def miller_test(d, n):
-    a = 2 + random.randint(1, n - 4)
+    a = int(2 + random.randint(1, n - 4))
     x = pow(a, d, n)
 
     if (x == 1) or (x == n - 1):
@@ -53,17 +51,19 @@ def get_primes_in_range(start, end):
 
 def get_primes(max_power):
     # Choose numbers uniformly between minimal and maximal value in log scale
-    int_lst = np.logspace(1, max_power, max_power, dtype='float128')
+    int_lst = np.logspace(1, max_power, max_power)
     primes_lst = []
 
     for n in int_lst:
-        k1 = int(math.exp((math.log10(n)/2) - 1))
-        k2 = int(math.exp((math.log10(n)/2) + 1))
-
+        n = int(n)
+        k1 = int(10 ** ((math.log10(n)/2) - 1))
+        k2 = int(10 ** ((math.log10(n)/2) + 1))
+        #print(k1, k2)
         # sample two integers n1,n2 from [k1,k2]
         primes = get_primes_in_range(k1, k2)
+        #print(primes)
         n1, n2 = np.random.choice(primes, 2, replace=False)
-
+        #print(n1, n2)
         for p in primes:
             # take the smallest prime number p1 larger than n1
             if p >= n1:
@@ -78,17 +78,17 @@ def get_primes(max_power):
 
 if __name__ == "__main__":
 
-    threshold = 1e5
+    threshold = 1e10
     power = int(math.log10(threshold)) 
     max_power = int(power ** 2)
 
     start = time.perf_counter()
-    primes = get_primes(max_power)
+    primes = get_primes(power)
     end = time.perf_counter()
     tottime = end - start
     np.savetxt(
         f"./data/primes{int(threshold)}.csv",
-        np.array(primes, dtype="int32"),
+        np.array(primes),
         delimiter=",",
         fmt="%.d",
         header="p, q, m",
