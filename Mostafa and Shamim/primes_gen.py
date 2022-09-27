@@ -42,6 +42,13 @@ def is_prime(n, reps=1):
     
     return True
 
+def primes_in_range(start, end):
+    primes = []
+    for p in range(start, end):
+        if is_prime(p, p):
+            primes.append(p)
+
+    return primes
 
 if __name__ == "__main__":
 
