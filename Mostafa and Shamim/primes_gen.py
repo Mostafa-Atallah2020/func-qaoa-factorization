@@ -24,6 +24,25 @@ def miller_test(d, n):
     
     return False
 
+def is_prime(n, reps):
+    if (n <= 1) or (n == 4):
+        return False
+
+    if (n <= 3):
+        return True
+
+    d = n - 1
+
+    while (d % 2 == 0):
+        d //= 2
+
+    for i in range(reps):
+        if miller_test(d, n) == False:
+            return False
+    
+    return True
+
+
 if __name__ == "__main__":
 
     threshold = 1e4
