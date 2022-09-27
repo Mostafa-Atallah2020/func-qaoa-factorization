@@ -42,7 +42,7 @@ def is_prime(n, reps=1):
     
     return True
 
-def primes_in_range(start, end):
+def get_primes_in_range(start, end):
     primes = []
     for p in range(start, end):
         if is_prime(p, p):
@@ -50,6 +50,31 @@ def primes_in_range(start, end):
 
     return primes
 
+def get_primes(max_power):
+    # Choose numbers uniformly between minimal and maximal value in log scale
+    int_lst = np.logspace(1, max_power, max_power)
+    primes_lst = []
+
+    for n in int_lst:
+        k1 = int(np.exp((np.log10(n)/2) - 1))
+        k2 = int(np.exp((np.log10(n)/2) + 1))
+
+        # sample two integers n1,n2 from [k1,k2]
+        primes = get_primes_in_range(k1, k2)
+        n1, n2 = np.random.choice(primes, 2, replace=False)
+
+        for p in primes:
+            # take the smallest prime number p1 larger than n1
+            if p >= n1:
+                p1 = p
+            # take the smallest prime number p2 larger than n2
+            if p >= n2:
+                p2 = p
+
+        primes_lst.append([p1, p2, p1*p2])
+
+    return primes_lst
+    
 if __name__ == "__main__":
 
     threshold = 1e4
