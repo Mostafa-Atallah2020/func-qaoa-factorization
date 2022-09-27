@@ -1,5 +1,6 @@
 import time
 import random
+import math
 
 import numpy as np
 
@@ -45,19 +46,19 @@ def is_prime(n, reps=1):
 def get_primes_in_range(start, end):
     primes = []
     for p in range(start, end):
-        if is_prime(p, p):
+        if is_prime(p, 10):
             primes.append(p)
 
     return primes
 
 def get_primes(max_power):
     # Choose numbers uniformly between minimal and maximal value in log scale
-    int_lst = np.logspace(1, max_power, max_power)
+    int_lst = np.logspace(1, max_power, max_power, dtype='float128')
     primes_lst = []
 
     for n in int_lst:
-        k1 = int(np.exp((np.log10(n)/2) - 1))
-        k2 = int(np.exp((np.log10(n)/2) + 1))
+        k1 = int(math.exp((math.log10(n)/2) - 1))
+        k2 = int(math.exp((math.log10(n)/2) + 1))
 
         # sample two integers n1,n2 from [k1,k2]
         primes = get_primes_in_range(k1, k2)
@@ -74,18 +75,23 @@ def get_primes(max_power):
         primes_lst.append([p1, p2, p1*p2])
 
     return primes_lst
-    
+
 if __name__ == "__main__":
 
-    threshold = 1e4
+    threshold = 1e5
+    power = int(math.log10(threshold)) 
+    max_power = int(power ** 2)
+
     start = time.perf_counter()
-    primes = get_primes_lower_than_n(int(np.sqrt(threshold)))
-    primes = primes[1:]
+    primes = get_primes(max_power)
     end = time.perf_counter()
     tottime = end - start
     np.savetxt(
-        f"./data/primes{int(threshold)}.txt",
+        f"./data/primes{int(threshold)}.csv",
         np.array(primes, dtype="int32"),
         delimiter=",",
+        fmt="%.d",
+        header="p, q, m",
+        comments="",
     )
     print(f"total time = {tottime} s")
