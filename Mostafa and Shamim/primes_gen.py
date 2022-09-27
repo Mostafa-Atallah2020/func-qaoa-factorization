@@ -24,7 +24,7 @@ def miller_test(d, n):
     
     return False
 
-def is_prime(n, reps):
+def is_prime(n, reps=1):
     if (n <= 1) or (n == 4):
         return False
 
