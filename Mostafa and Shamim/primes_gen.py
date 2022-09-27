@@ -1,17 +1,40 @@
-from multiprocessing.dummy import Pool
-import matplotlib.pyplot as plt
+import time
+import random
+
 import numpy as np
-import time
-from graph1_alt_func import create_clauses, assess_number_of_unknowns, get_primes_lower_than_n, split_list
-import time
 
-if __name__ == '__main__':
+from graph1_alt_func import get_primes_lower_than_n
 
-    threshold = 1e5
+def miller_test(d, n):
+    a = 2 + random.randint(1, n - 4)
+    x = pow(a, d, n)
+
+    if (x == 1) or (x == n - 1):
+        return True
+
+    while (d != n - 1):
+        x = x**2 % n
+        d *= 2
+
+        if x == 1:
+            return False
+        
+        if x == n - 1:
+            return True
+    
+    return False
+
+if __name__ == "__main__":
+
+    threshold = 1e4
     start = time.perf_counter()
-    primes = get_primes_lower_than_n(int(threshold))
+    primes = get_primes_lower_than_n(int(np.sqrt(threshold)))
     primes = primes[1:]
     end = time.perf_counter()
     tottime = end - start
-    np.savetxt(f'./data/primes{int(threshold)}.txt', np.array(primes), delimiter=',')
+    np.savetxt(
+        f"./data/primes{int(threshold)}.txt",
+        np.array(primes, dtype="int32"),
+        delimiter=",",
+    )
     print(f"total time = {tottime} s")
