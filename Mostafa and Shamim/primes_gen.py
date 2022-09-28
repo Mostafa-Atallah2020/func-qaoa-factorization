@@ -44,10 +44,11 @@ def is_prime_probs(n, reps=1):
     
     return True
 
+'''
 def get_primes_in_range(start, end):
     primes = []
     for p in range(start, end):
-        if is_prime(p, 10):
+        if is_prime_probs(p, 10):
             primes.append(p)
 
     return primes
@@ -81,17 +82,61 @@ def get_primes(max_power):
         primes_lst.append([k1, k2, n1, n2, p1, p2, p1*p2])
 
     return primes_lst
+'''
+
+def is_prime_deter(n):
+    '''
+    checks for primality using the deterministic method
+    '''
+    if (n == 2) or (n == 3):
+        return True
+    
+    if (n % 2) or (n < 2):
+        return False
+
+    lim = int(math.sqrt(n)) + 1
+
+    for i in range(3, lim, 2):
+        if (n % i) == 0:
+            return False
+
+    return True
+
+def get_primes_SOE(n):
+    '''
+    get primes smaller than or equal to n using Sieve of Eratosthenes method with time complexiety O(n*log(log(n)))
+    https://www.geeksforgeeks.org/sieve-of-eratosthenes/
+    '''
+    n = int(n)
+    prime = [True for i in range(n + 1)]
+    p = 2
+    primes_lst = []
+
+    while (p ** 2) <= n:
+        if prime[p]:
+            for i in range(p ** 2, n + 1, p):
+                prime[i] = False
+        p += 1
+
+    for p in range(2, n+1):
+        if prime[p]:
+            primes_lst.append(p)
+
+    return primes_lst
 
 if __name__ == "__main__":
 
-    threshold = 1e10
+    threshold = 1e9
     power = int(math.log10(threshold)) 
     max_power = int(power ** 2)
 
     start = time.perf_counter()
-    primes = get_primes(power)
+    primes = get_primes_SOE(threshold)
+    #primes = get_primes(power)
     end = time.perf_counter()
     tottime = end - start
+    #print(primes)
+    '''
     np.savetxt(
         f"./data/primes{int(threshold)}.csv",
         np.array(primes),
@@ -100,4 +145,5 @@ if __name__ == "__main__":
         header="k1, k2, n1, n2, p1, p2, m=p1*p2",
         comments="",
     )
+    '''
     print(f"total time = {tottime} s")
