@@ -124,26 +124,41 @@ def get_primes_SOE(n):
 
     return primes_lst
 
+def get_biprimes(threshold):
+    n = int(np.sqrt(threshold))
+    primes = get_primes_SOE(n)
+    primes = primes[1:]
+    biprimes = []
+
+    for p in primes:
+        for q in primes:
+            if p < q:
+                continue
+            m = p * q
+            if m > threshold:
+                continue
+            biprimes.append([p, q, m])
+
+    return biprimes
+
+
 if __name__ == "__main__":
 
     threshold = 1e9
-    power = int(math.log10(threshold)) 
-    max_power = int(power ** 2)
 
     start = time.perf_counter()
-    primes = get_primes_SOE(threshold)
+    biprimes = get_biprimes(threshold)
     #primes = get_primes(power)
     end = time.perf_counter()
     tottime = end - start
-    #print(primes)
-    '''
+    
     np.savetxt(
-        f"./data/primes{int(threshold)}.csv",
-        np.array(primes),
+        f"./data/biprimes{int(threshold)}.csv",
+        np.array(biprimes),
         delimiter=",",
         fmt="%.d",
-        header="k1, k2, n1, n2, p1, p2, m=p1*p2",
+        header="p, q, m=p*q",
         comments="",
     )
-    '''
+    
     print(f"total time = {tottime} s")
