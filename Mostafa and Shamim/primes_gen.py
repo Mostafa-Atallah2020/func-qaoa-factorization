@@ -23,7 +23,10 @@ def miller_test(d, n):
     
     return False
 
-def is_prime(n, reps=1):
+def is_prime_probs(n, reps=1):
+    '''
+    checks for primality using the probabilistic method
+    '''
     if (n <= 1) or (n == 4):
         return False
 
@@ -51,28 +54,31 @@ def get_primes_in_range(start, end):
 
 def get_primes(max_power):
     # Choose numbers uniformly between minimal and maximal value in log scale
-    int_lst = np.logspace(1, max_power, max_power)
+    int_lst = np.logspace(1, max_power, max_power, base=2)
     primes_lst = []
 
     for n in int_lst:
         n = int(n)
-        k1 = int(10 ** ((math.log10(n)/2) - 1))
-        k2 = int(10 ** ((math.log10(n)/2) + 1))
-        #print(k1, k2)
+        #k1 = int(10 ** ((math.log10(n)/2) - 1))
+        k1 = int(2 ** ((math.log2(n)/2) - 1))
+        #k2 = int(10 ** ((math.log10(n)/2) + 1))
+        k2 = int(2 ** ((math.log2(n)/2) + 1))
         # sample two integers n1,n2 from [k1,k2]
-        primes = get_primes_in_range(k1, k2)
-        #print(primes)
-        n1, n2 = np.random.choice(primes, 2, replace=False)
-        #print(n1, n2)
-        for p in primes:
-            # take the smallest prime number p1 larger than n1
-            if p >= n1:
-                p1 = p
-            # take the smallest prime number p2 larger than n2
-            if p >= n2:
-                p2 = p
+        #primes = get_primes_in_range(k1, k2)
+        integers = range(k1, k2)
+        n1, n2 = np.random.choice(integers, 2, replace=False)
 
-        primes_lst.append([p1, p2, p1*p2])
+        for k in np.arange(n1, 2*k2):
+            k = int(k)
+            if is_prime(k, 10):
+                p1 = k
+        
+        for k in np.arange(n2, 2*k2):
+            k = int(k)
+            if is_prime(k, 10):
+                p2 = k
+
+        primes_lst.append([k1, k2, n1, n2, p1, p2, p1*p2])
 
     return primes_lst
 
@@ -91,7 +97,7 @@ if __name__ == "__main__":
         np.array(primes),
         delimiter=",",
         fmt="%.d",
-        header="p, q, m",
+        header="k1, k2, n1, n2, p1, p2, m=p1*p2",
         comments="",
     )
     print(f"total time = {tottime} s")
