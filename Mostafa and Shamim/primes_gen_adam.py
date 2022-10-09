@@ -64,7 +64,8 @@ def get_primes(max_power, num_biprimes):
 
 if __name__ == "__main__":
     import sys
-    threshold = sys.maxsize
+    #threshold = sys.maxsize
+    threshold = 1e10 
     max_pow = int(np.log2(threshold))
     t = time.time()
     biprimes = get_primes(max_pow, 100)
