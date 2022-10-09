@@ -46,7 +46,8 @@ def main(threshold):
 if __name__ == '__main__':
     import time
     import sys
-    threshold = sys.maxsize
+    #threshold = sys.maxsize
+    threshold = 1e10
 
     start = time.perf_counter()
     main(threshold)
