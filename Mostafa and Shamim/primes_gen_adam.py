@@ -63,13 +63,12 @@ def get_primes(max_power, num_biprimes):
     return primes_lst
 
 if __name__ == "__main__":
+    import sys
+    threshold = sys.maxsize
+    max_pow = int(np.log2(threshold))
     t = time.time()
-    result = get_primes(120, 1000)
-    print(time.time()-t)
-    for r in result:
-        print(r)
-    
-    exit()
+    biprimes = get_primes(max_pow, 100)
+    tottime = time.time()-t
     
     np.savetxt(
         f"./data/biprimes{int(threshold)}.csv",
