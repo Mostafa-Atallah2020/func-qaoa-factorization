@@ -1,57 +1,49 @@
+import gc
+import os
 from graph1_alt_func import create_clauses, assess_number_of_unknowns
 import numpy as np
+from time import time
 
-def main(threshold):
+if __name__ == '__main__':
+    import argparse
 
-    file_name_with_preprocessing = "./data/preprocessing_"+str(int(threshold))+"_results.csv"
-    file_name_no_processing = f"./data/no_preprocessing{int(threshold)}.csv"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--maxpow", type=int, default=10, required=False)
+    parser.add_argument("-n", "--number", type=int, default=100, required=False)
+    parser.add_argument("-r", "--replace", action="store_true")
+    parser.add_argument("--dirin", type=str, default="final_data_biprimes")
+    parser.add_argument("--dirout", type=str, default="data_processing")
+    args = parser.parse_args()
 
-    biprimes = np.genfromtxt(f"./data/biprimes{int(threshold)}.csv",
+    number_of_biprimes = args.number
+    max_pow = args.maxpow
+
+    biprimes = np.genfromtxt(f"./{args.dirin}/biprimes_maxpow{max_pow}_number{number_of_biprimes}.csv",
                             delimiter=',',
                             skip_header=1,
                             dtype='int')
 
-    qubits_required_no_preprocessing = []
-    qubits_required_with_preprocessing = []
-
+    t = time()
     for bi in biprimes:
-        p = bi[0]
-        q = bi[1]
-        m = bi[2]
+        p, q, m = bi
 
-        try:
-            p_dict, q_dict, z_dict, _ = create_clauses(m, p, q, apply_preprocessing=False, verbose=False)
-            x, z = assess_number_of_unknowns(p_dict, q_dict, z_dict)
-            qubits_required_no_preprocessing.append([m, x, z])
-
-            p_dict, q_dict, z_dict, _ = create_clauses(m, p, q, apply_preprocessing=True, verbose=False)
-            x, z = assess_number_of_unknowns(p_dict, q_dict, z_dict)
-            qubits_required_with_preprocessing.append([m, x, z])
-
-        except:
+        file_name_with_preprocessing = f"./{args.dirout}/preprocessing_{m}_results.csv"
+        if os.path.isfile(file_name_with_preprocessing):
+            print(f"Number {m} skipped (file exists)")
             continue
+        print(f"Number {m} being considered")
+            
+        p_dict, q_dict, z_dict, _ = create_clauses(m, p, q, apply_preprocessing=True, verbose=False)
+        x, z = assess_number_of_unknowns(p_dict, q_dict, z_dict)
+        result = [[p, q, m, x, z]]
+        p_dict, q_dict, z_dict, x, z = [None, None, None, None, None]
+        print(np.array(result))
+        np.savetxt(file_name_with_preprocessing, 
+            result, 
+            delimiter=",", fmt='%.d', 
+            header='p,q,m,unknowns,carry_bits', comments='')
 
+    print(f"Computation finished ({time()-t} seconds)")
     
-    np.savetxt(file_name_no_processing, 
-            np.array(qubits_required_no_preprocessing), 
-            delimiter=",", fmt='%.d', 
-            header='m,unknowns,carry_bits', comments='')
-
-    np.savetxt(file_name_with_preprocessing, 
-            np.array(qubits_required_with_preprocessing), 
-            delimiter=",", fmt='%.d', 
-            header='m,unknowns,carry_bits', comments='')
 
 
-if __name__ == '__main__':
-    import time
-    import sys
-    #threshold = sys.maxsize
-    threshold = 1e10
-
-    start = time.perf_counter()
-    main(threshold)
-    end = time.perf_counter()
-    tottime = end - start
-
-    print(f'Total time: {tottime/60} min')
