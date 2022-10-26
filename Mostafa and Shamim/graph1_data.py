@@ -22,7 +22,7 @@ if __name__ == '__main__':
                             delimiter=',',
                             skip_header=1,
                             dtype='int')
-
+    print(f"{max_pow} {number_of_biprimes}")
     t = time()
     for bi in biprimes:
         p, q, m = bi
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         x, z = assess_number_of_unknowns(p_dict, q_dict, z_dict)
         result = [[p, q, m, x, z]]
         p_dict, q_dict, z_dict, x, z = [None, None, None, None, None]
-        print(np.array(result))
+        # print(np.array(result))
         np.savetxt(file_name_with_preprocessing, 
             result, 
             delimiter=",", fmt='%.d', 
