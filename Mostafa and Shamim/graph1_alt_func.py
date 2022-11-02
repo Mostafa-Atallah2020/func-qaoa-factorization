@@ -183,7 +183,7 @@ def create_basic_clauses(m_dict, p_dict, q_dict, z_dict, apply_preprocessing=Tru
                     z_dict[(i, j)] = 0
 
         for j in range(1, n_c):
-            clause += -(2 ** j) * z_dict.get((i, i + j), 0)
+            clause += -(2**j) * z_dict.get((i, i + j), 0)
         if clause == 0:
             clause = sympify(clause)
         clauses.append(clause)
@@ -659,7 +659,7 @@ def get_primes_lower_than_n(n):
 
         # Assume number is prime until shown it is not.
         isPrime = True
-        for num in range(2, int(possiblePrime ** 0.5) + 1):
+        for num in range(2, int(possiblePrime**0.5) + 1):
             if possiblePrime % num == 0:
                 isPrime = False
                 break

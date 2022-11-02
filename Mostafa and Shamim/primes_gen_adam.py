@@ -1,8 +1,10 @@
-from ast import parse
-import time
-import random
 import math
+import random
+import time
+from ast import parse
+
 import numpy as np
+
 
 def is_prime_miller_test(n):
     # Implementation uses the Miller-Rabin Primality Test
@@ -22,7 +24,7 @@ def is_prime_miller_test(n):
     while s % 2 == 0:
         r += 1
         s //= 2
-    for aa in np.arange(2, min(n, math.floor(2*math.log(n)**2))):
+    for aa in np.arange(2, min(n, math.floor(2 * math.log(n) ** 2))):
         a = int(aa)
         x = pow(a, s, n)
         if x == 1 or x == n - 1:
@@ -44,13 +46,13 @@ def get_primes(max_power, num_biprimes):
 
     for n in int_lst:
         n = int(n)
-        #k1 = int(10 ** ((math.log10(n)/2) - 1))
-        k1 = max(2, int(2 ** ((math.log2(n)/2) - 1)))
-        #k2 = int(10 ** ((math.log10(n)/2) + 1))
-        k2 = int(2 ** ((math.log2(n)/2) + 1))
-        
+        # k1 = int(10 ** ((math.log10(n)/2) - 1))
+        k1 = max(2, int(2 ** ((math.log2(n) / 2) - 1)))
+        # k2 = int(10 ** ((math.log10(n)/2) + 1))
+        k2 = int(2 ** ((math.log2(n) / 2) + 1))
+
         # sample two integers n1,n2 from [k1,k2]
-        #primes = get_primes_in_range(k1, k2)
+        # primes = get_primes_in_range(k1, k2)
 
         # n1, n2 = np.random.randint(k1, k2, 2,dtype=np.ulonglong)
         n1 = random.randint(k1, k2)
@@ -58,13 +60,13 @@ def get_primes(max_power, num_biprimes):
 
         p1, p2 = int(n1), int(n2)
         while not is_prime_miller_test(p1):
-            p1 += 1 
+            p1 += 1
         while not is_prime_miller_test(p2):
-            p2 += 1 
-        
-        primes_lst.append([p1, p2, p1*p2])
+            p2 += 1
+
+        primes_lst.append([p1, p2, p1 * p2])
     primes_lst = np.asarray(primes_lst)
-    primes_lst = primes_lst[primes_lst[:,2].argsort()]
+    primes_lst = primes_lst[primes_lst[:, 2].argsort()]
     return primes_lst
 
 
@@ -79,18 +81,18 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--dir", type=str, default="final_data_biprimes")
     args = parser.parse_args()
 
-    #threshold = sys.maxsize
+    # threshold = sys.maxsize
     number_of_biprimes = args.number
     max_pow = args.maxpow
 
     filename = f"./{args.dir}/biprimes_maxpow{max_pow}_number{number_of_biprimes}.csv"
     if os.path.exists(filename) and not args.replace:
-        raise ValueError(f"filename \"{filename}\" already exists - remove")
-    
+        raise ValueError(f'filename "{filename}" already exists - remove')
+
     t = time.time()
     biprimes = get_primes(max_pow, number_of_biprimes)
     print(f"Computation finished ({time.time()-t} seconds)")
-    
+
     np.savetxt(
         filename,
         np.array(biprimes),
@@ -100,5 +102,3 @@ if __name__ == "__main__":
         comments="",
     )
     print(f"Data saved to {filename}")
-    
-    
