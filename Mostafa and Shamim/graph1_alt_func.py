@@ -4,10 +4,11 @@ An alternative approach to generate graph1 of VQF paper https://arxiv.org/abs/18
 It's taken from https://github.com/mstechly/vqf/blob/master/research/2019_05_04_resources_needed/src/
 """
 
-import numpy as np
-from sympy import Symbol, Add, Mul, Pow, Number
-from sympy import factor, srepr, sympify
+# import numpy as
+import math as mth
 import pdb
+
+from sympy import Add, Mul, Number, Pow, Symbol, factor, srepr, sympify
 
 
 def create_clauses(
@@ -120,7 +121,7 @@ def create_initial_dicts(m_int, true_p_int=None, true_q_int=None):
         n_p = len(true_p_binary)
 
     if true_q_int is None:
-        n_q = int(np.ceil(len(m_dict) / 2))
+        n_q = int(mth.ceil(len(m_dict) / 2))
     else:
         true_q_binary = bin(true_q_int)[2:][::-1]
         n_q = len(true_q_binary)
@@ -138,7 +139,7 @@ def create_initial_dicts(m_int, true_p_int=None, true_q_int=None):
     if true_q_int is not None:
         q_dict[n_q - 1] = 1
 
-    n_c = len(m_dict) + int(np.ceil(len(m_dict) / 2)) - 1
+    n_c = len(m_dict) + int(mth.ceil(len(m_dict) / 2)) - 1
 
     z_dict = {}
     for i in range(n_c):
@@ -158,7 +159,7 @@ def create_initial_dicts(m_int, true_p_int=None, true_q_int=None):
 
 def create_basic_clauses(m_dict, p_dict, q_dict, z_dict, apply_preprocessing=True):
     clauses = []
-    n_c = len(m_dict) + int(np.ceil(len(m_dict) / 2)) - 1
+    n_c = len(m_dict) + int(mth.ceil(len(m_dict) / 2)) - 1
     for i in range(n_c):
         clause = 0
         for j in range(i + 1):
@@ -174,7 +175,7 @@ def create_basic_clauses(m_dict, p_dict, q_dict, z_dict, apply_preprocessing=Tru
             max_sum = get_max_sum_from_clause(clause)
 
             if max_sum != 0:
-                max_carry = int(np.floor(np.log2(max_sum)))
+                max_carry = int(mth.floor(mth.log2(max_sum)))
             else:
                 max_carry = 0
             for j in range(i + max_carry + 1, n_c):
@@ -668,7 +669,8 @@ def get_primes_lower_than_n(n):
 
     return primes
 
+
 def split_list(arr, size):
 
-  for i in range(0, len(arr), size):
-    yield arr[i:i + size]
+    for i in range(0, len(arr), size):
+        yield arr[i : i + size]
