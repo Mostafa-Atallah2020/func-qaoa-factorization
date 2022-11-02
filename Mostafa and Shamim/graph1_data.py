@@ -1,10 +1,10 @@
 from time import time
 
 import numpy as np
-
+import csv 
 from graph1_alt_func import assess_number_of_unknowns, create_clauses
 
-if __name__ == "__main__":
+if __name__ == "__main__":  
     import argparse
 
     parser = argparse.ArgumentParser()
@@ -17,13 +17,21 @@ if __name__ == "__main__":
 
     number_of_biprimes = args.number
     max_pow = args.maxpow
+    biprimes = []
+    filename = f"./{args.dirin}/biprimes_maxpow{max_pow}_number{number_of_biprimes}.csv"
+    with open(filename, 'r') as csvfile:
+        # creating a csv reader object
+        csvreader = csv.reader(csvfile)
+        # extracting each data row one by one
+        for row in csvreader:
+            biprimes.append(row)
 
-    biprimes = np.genfromtxt(
-        f"./{args.dirin}/biprimes_maxpow{max_pow}_number{number_of_biprimes}.csv",
-        delimiter=",",
-        skip_header=1,
-        dtype="int",
-    )
+    # biprimes = np.genfromtxt(
+    #     f"./{args.dirin}/biprimes_maxpow{max_pow}_number{number_of_biprimes}.csv",
+    #     delimiter=",",
+    #     skip_header=1,
+    #     dtype="int",
+    # )
 
     file_name_with_preprocessing = (
         f"./{args.dirout}/preprocessing_{max_pow}_results.csv"
@@ -56,23 +64,33 @@ if __name__ == "__main__":
             result = [p, q, m, x, z]
             if result not in qubits_required_with_preprocessing:
                 qubits_required_with_preprocessing.append(result)
+    
+    with open(file_name_no_processing, 'w') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(["p", "q", "m", "unknowns","carry_bits"])
+        csvwriter.writerows(qubits_required_no_preprocessing)
 
-    np.savetxt(
-        file_name_no_processing,
-        qubits_required_no_preprocessing,
-        delimiter=",",
-        fmt="%.d",
-        header="p,q,m,unknowns,carry_bits",
-        comments="",
-    )
+    with open(file_name_with_preprocessing, 'w') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(["p", "q", "m", "unknowns","carry_bits"])
+        csvwriter.writerows(qubits_required_with_preprocessing)
 
-    np.savetxt(
-        file_name_with_preprocessing,
-        qubits_required_with_preprocessing,
-        delimiter=",",
-        fmt="%.d",
-        header="p,q,m,unknowns,carry_bits",
-        comments="",
-    )
+    # np.savetxt(
+    #     file_name_no_processing,
+    #     qubits_required_no_preprocessing,
+    #     delimiter=",",
+    #     fmt="%.d",
+    #     header="p,q,m,unknowns,carry_bits",
+    #     comments="",
+    # )
+
+    # np.savetxt(
+    #     file_name_with_preprocessing,
+    #     qubits_required_with_preprocessing,
+    #     delimiter=",",
+    #     fmt="%.d",
+    #     header="p,q,m,unknowns,carry_bits",
+    #     comments="",
+    # )
 
     print(f"Computation finished ({time()-t} seconds)")
