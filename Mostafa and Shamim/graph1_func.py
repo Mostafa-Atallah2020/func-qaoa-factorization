@@ -1,4 +1,5 @@
-import numpy as np
+# import numpy as mth
+import math as mth
 from sympy import (
     Add,
     Mul,
@@ -20,7 +21,7 @@ def create_dicts(m):
 
     n_m = len(m_bin)
     n_p = n_m
-    n_q = int(np.ceil(len(m_bin) / 2))
+    n_q = int(mth.ceil(len(m_bin) / 2))
     n_c = n_p + n_q - 1
 
     m_dict = {}
@@ -57,7 +58,7 @@ def create_dicts(m):
 
 def create_clause(m, p, q, z):
     clauses = []
-    n = len(m) + int(np.ceil(len(m) / 2)) - 1
+    n = len(m) + int(mth.ceil(len(m) / 2)) - 1
     for i in range(n):
         clause = 0
         for j in range(i + 1):
@@ -71,7 +72,7 @@ def create_clause(m, p, q, z):
         if clause != 0:
             max_sum1 = max_sum(clause)
             if max_sum1 != 0:
-                max_carry = int(np.floor(np.log2(max_sum1)))
+                max_carry = int(mth.floor(mth.log2(max_sum1)))
             else:
                 max_carry = 0
         for j in range(len(z)):
