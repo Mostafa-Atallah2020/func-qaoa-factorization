@@ -5,7 +5,6 @@ from ast import parse
 
 import numpy as np
 
-
 def is_prime_miller_test(n):
     # Implementation uses the Miller-Rabin Primality Test
     # The optimal number of rounds for this test is 40
@@ -24,7 +23,7 @@ def is_prime_miller_test(n):
     while s % 2 == 0:
         r += 1
         s //= 2
-    for aa in np.arange(2, min(n, math.floor(2 * math.log(n) ** 2))):
+    for aa in range(2, min(n, math.floor(2 * math.log(n) ** 2))):
         a = int(aa)
         x = pow(a, s, n)
         if x == 1 or x == n - 1:
@@ -36,6 +35,13 @@ def is_prime_miller_test(n):
         else:
             return False
     return True
+
+
+def my_logspace(start,stop,num_elements,base):
+    step = (start-stop)/num_elements
+    powers = range(start,stop + step,step)
+    my_logspace = [base**x for x in powers]
+    return my_logspace
 
 
 def get_primes(max_power, num_biprimes):
@@ -67,12 +73,15 @@ def get_primes(max_power, num_biprimes):
         primes_lst.append([p1, p2, p1 * p2])
     primes_lst = np.asarray(primes_lst)
     primes_lst = primes_lst[primes_lst[:, 2].argsort()]
+    # for x in primes_lst:
+        # x[:2] = sorted(x[:2])
     return primes_lst
 
 
 if __name__ == "__main__":
     import argparse
     import os
+    import csv
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--maxpow", type=int, default=20, required=False)
@@ -93,12 +102,19 @@ if __name__ == "__main__":
     biprimes = get_primes(max_pow, number_of_biprimes)
     print(f"Computation finished ({time.time()-t} seconds)")
 
-    np.savetxt(
-        filename,
-        np.array(biprimes),
-        delimiter=",",
-        fmt="%.d",
-        header="p, q, m=p*q",
-        comments="",
-    )
+    with open(filename, 'w') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        # writing the header
+        csvwriter.writerow(["p", "q", "m=p*q"])
+         # writing the data rows
+        csvwriter.writerows(biprimes)
+
+    # np.savetxt(
+    #     filename,
+    #     np.array(biprimes),
+    #     delimiter=",",
+    #     fmt="%.d",
+    #     header="p, q, m=p*q",
+    #     comments="",
+    # )
     print(f"Data saved to {filename}")
