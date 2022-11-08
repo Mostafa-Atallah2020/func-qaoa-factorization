@@ -37,11 +37,11 @@ def is_prime_miller_test(n):
     return True
 
 
-def my_logspace(start,stop,num_elements,base):
-    step = (start-stop)/num_elements
-    powers = range(start,stop + step,step)
-    my_logspace = [base**x for x in powers]
-    return my_logspace
+# def my_logspace(start,stop,num_elements,base):
+#     step = (start-stop)/num_elements
+#     powers = range(start,stop + step,step)
+#     my_logspace = [base**x for x in powers]
+#     return my_logspace
 
 
 def get_primes(max_power, num_biprimes):

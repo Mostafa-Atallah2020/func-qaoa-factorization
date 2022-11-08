@@ -1,6 +1,6 @@
 from time import time
 
-import numpy as np
+# import numpy as np
 import csv 
 from graph1_alt_func import assess_number_of_unknowns, create_clauses
 
@@ -22,9 +22,11 @@ if __name__ == "__main__":
     with open(filename, 'r') as csvfile:
         # creating a csv reader object
         csvreader = csv.reader(csvfile)
+        header = next(csvreader)
         # extracting each data row one by one
         for row in csvreader:
-            biprimes.append(row)
+            int_row = [int(i) for i in row]
+            biprimes.append(int_row)
 
     # biprimes = np.genfromtxt(
     #     f"./{args.dirin}/biprimes_maxpow{max_pow}_number{number_of_biprimes}.csv",
