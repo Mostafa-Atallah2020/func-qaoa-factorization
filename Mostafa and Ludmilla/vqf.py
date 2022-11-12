@@ -687,4 +687,17 @@ def get_classical_energy(m: int):
         expr += clauses[i] ** 2
 
     energy = expr.expand()
+
+    known_expressions = {}
+    known_expressions = apply_rule_1(energy, known_expressions)
+    energy = simplify_clause(energy, known_expressions)
+
+    known_expressions = apply_rule_2(energy, known_expressions)
+    energy = simplify_clause(energy, known_expressions)
+
+    known_expressions = apply_rule_3(energy, known_expressions)
+    energy = simplify_clause(energy, known_expressions)
+
+    known_expressions = apply_rules_4_and_5(energy, known_expressions)
+    energy = simplify_clause(energy, known_expressions)
     return energy
