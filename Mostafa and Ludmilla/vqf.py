@@ -683,7 +683,7 @@ def get_classical_energy(m: int, apply_rules=False):
     It calculates the classical energy for the set of classically simplified clauses for a prime m.
     refer to eq(6) in https://arxiv.org/abs/1808.08927
     """
-    _, _, _, clauses = create_clauses(m, verbose=False)
+    _, _, _, clauses = create_clauses(m, apply_preprocessing=False, verbose=False)
 
     expr = clauses[0] ** 2
     for i in range(1, len(clauses)):
@@ -743,7 +743,7 @@ def get_pauli_str(energy_term: Mul, bits):
     """
     It returns qiskit pauli string for a classical energy term.
     """
-
+    bits = list(bits)
     coeff, symbols = get_symbols(energy_term)
     symbols = list(symbols)
     vars = {}
@@ -767,12 +767,12 @@ def get_pauli_str(energy_term: Mul, bits):
                 ising ^= (I - Z) / 2
             else:
                 ising ^= I
-    else:
-        print("Constant terms in an ising hamiltonians are unimportatnt.")
-        return coeff
+    #else:
+    #    print("Constant terms in an ising hamiltonians are unimportatnt.")
+        #return coeff
 
     # print(coeff * ising)
-    return coeff * ising
+        return coeff * ising
 
 
 def get_cost_hamiltonian(m: int):
@@ -781,11 +781,18 @@ def get_cost_hamiltonian(m: int):
     """
     energy = get_classical_energy(m, apply_rules=True)
     terms = energy.args[::-1]
+    bits = energy.free_symbols
 
     ising_terms = []
-    for t in range(len(terms)):
-        ising = get_pauli_str(term, free_symbols)
-        ising_terms.append(ising)
+    for i in range(len(terms)):
+        t = terms[i]
+
+        # ignoring constant terms in the ising hamiltonians
+        if type(t) != int:
+            pauli_str = get_pauli_str(t, bits)
+            #print(str(pauli_str) + "\n")
+            if type(pauli_str) != type(None):
+                ising_terms.append(pauli_str)
 
     hamiltonian = sum(ising_terms)
     # print(str(hamiltonian))
