@@ -1,7 +1,7 @@
 """
 An alternative approach to generate graph1 of VQF paper https://arxiv.org/abs/1808.08927
 
-It's taken from https://github.com/mstechly/vqf/blob/master/research/2019_05_04_resources_needed/src/
+refer to https://github.com/mstechly/vqf/blob/master/research/2019_05_04_resources_needed/src/
 """
 
 # import numpy as
@@ -767,11 +767,11 @@ def get_pauli_str(energy_term: Mul, bits):
                 ising ^= (I - Z) / 2
             else:
                 ising ^= I
-    #else:
-    #    print("Constant terms in an ising hamiltonians are unimportatnt.")
-        #return coeff
+        # else:
+        #    print("Constant terms in an ising hamiltonians are unimportatnt.")
+        # return coeff
 
-    # print(coeff * ising)
+        # print(coeff * ising)
         return coeff * ising
 
 
@@ -790,7 +790,7 @@ def get_cost_hamiltonian(m: int):
         # ignoring constant terms in the ising hamiltonians
         if type(t) != int:
             pauli_str = get_pauli_str(t, bits)
-            #print(str(pauli_str) + "\n")
+            # print(str(pauli_str) + "\n")
             if type(pauli_str) != type(None):
                 ising_terms.append(pauli_str)
 
