@@ -677,7 +677,7 @@ def split_list(arr, size):
         yield arr[i : i + size]
 
 
-def get_classical_energy(m: int):
+def get_classical_energy(m: int, apply_rules=False):
     """
     It calculates the classical energy for the set of classically simplified clauses for a prime m.
     refer to eq(6) in https://arxiv.org/abs/1808.08927
@@ -690,18 +690,20 @@ def get_classical_energy(m: int):
 
     energy = expr.expand()
 
-    known_expressions = {}
-    known_expressions = apply_rule_1(energy, known_expressions)
-    energy = simplify_clause(energy, known_expressions)
+    if apply_rules:
+        known_expressions = {}
+        known_expressions = apply_rule_1(energy, known_expressions)
+        energy = simplify_clause(energy, known_expressions)
 
-    known_expressions = apply_rule_2(energy, known_expressions)
-    energy = simplify_clause(energy, known_expressions)
+        known_expressions = apply_rule_2(energy, known_expressions)
+        energy = simplify_clause(energy, known_expressions)
 
-    known_expressions = apply_rule_3(energy, known_expressions)
-    energy = simplify_clause(energy, known_expressions)
+        known_expressions = apply_rule_3(energy, known_expressions)
+        energy = simplify_clause(energy, known_expressions)
 
-    known_expressions = apply_rules_4_and_5(energy, known_expressions)
-    energy = simplify_clause(energy, known_expressions)
+        known_expressions = apply_rules_4_and_5(energy, known_expressions)
+        energy = simplify_clause(energy, known_expressions)
+    
     return energy
 
 
