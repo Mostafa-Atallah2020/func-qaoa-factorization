@@ -704,7 +704,7 @@ def get_classical_energy(m: int, apply_rules=False):
 
         known_expressions = apply_rules_4_and_5(energy, known_expressions)
         energy = simplify_clause(energy, known_expressions)
-    
+
     return energy
 
 
@@ -740,8 +740,8 @@ def get_symbols(term: Mul):
 
 def get_pauli_str(energy_term: Mul, bits):
 
-    """ 
-    It returns qiskit pauli string for a classical energy term. 
+    """
+    It returns qiskit pauli string for a classical energy term.
     """
 
     coeff, symbols = get_symbols(energy_term)
@@ -752,24 +752,41 @@ def get_pauli_str(energy_term: Mul, bits):
         for i in range(len(bits)):
             s = bits[i]
             vars[s] = False
-        
+
         for i in range(len(symbols)):
             if symbols[i] in vars.keys():
                 vars[symbols[i]] = True
 
         if vars[bits[0]]:
-            ising = (I-Z)/2
+            ising = (I - Z) / 2
         else:
             ising = I
 
         for i in range(1, len(bits)):
             if vars[bits[i]]:
-                ising ^= (I-Z)/2
+                ising ^= (I - Z) / 2
             else:
                 ising ^= I
     else:
         print("Constant terms in an ising hamiltonians are unimportatnt.")
         return coeff
 
-    #print(coeff * ising)
+    # print(coeff * ising)
     return coeff * ising
+
+
+def get_cost_hamiltonian(m: int):
+    """
+    It calculates the factoring hamiltonian for a biprime m. refer to eq(7) in https://arxiv.org/abs/1808.08927
+    """
+    energy = get_classical_energy(m, apply_rules=True)
+    terms = energy.args[::-1]
+
+    ising_terms = []
+    for t in range(len(terms)):
+        ising = get_pauli_str(term, free_symbols)
+        ising_terms.append(ising)
+
+    hamiltonian = sum(ising_terms)
+    # print(str(hamiltonian))
+    return hamiltonian
