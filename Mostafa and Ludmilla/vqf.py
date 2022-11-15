@@ -8,7 +8,8 @@ It's taken from https://github.com/mstechly/vqf/blob/master/research/2019_05_04_
 import math as mth
 import pdb
 
-from sympy import Add, Mul, Number, Pow, Symbol, factor, srepr, sympify
+from sympy import Add, Mul, Number, Pow, Symbol, factor, srepr, sympify, Integer, Float
+from sympy.core.numbers import NegativeOne
 
 
 def create_clauses(
@@ -675,11 +676,12 @@ def split_list(arr, size):
     for i in range(0, len(arr), size):
         yield arr[i : i + size]
 
+
 def get_classical_energy(m: int):
-    '''
+    """
     It calculates the classical energy for the set of classically simplified clauses for a prime m.
     refer to eq(6) in https://arxiv.org/abs/1808.08927
-    '''
+    """
     _, _, _, clauses = create_clauses(m, verbose=False)
 
     expr = clauses[0] ** 2
@@ -701,3 +703,33 @@ def get_classical_energy(m: int):
     known_expressions = apply_rules_4_and_5(energy, known_expressions)
     energy = simplify_clause(energy, known_expressions)
     return energy
+
+
+def get_symbols(term: Mul):
+    """
+    It retuns symbols and coefficient for a sympy symbol of the form c * x_1 * x_2 * ... * x_n.
+    """
+    args = term.args
+    try:
+        if (
+            type(args[0]) == Integer
+            or type(args[0]) == Float
+            or type(args[0]) == NegativeOne
+        ):
+            coeff = float(args[0])
+            args_no_coeff = args[1:]
+
+        else:
+            coeff = 1
+            args_no_coeff = args[:]
+
+    except:
+        if len(args) == 0 and type(term) == Symbol:
+            coeff = 1
+            args_no_coeff = (term,)
+
+        else:
+            coeff = term
+            args_no_coeff = ()
+
+    return coeff, args_no_coeff
