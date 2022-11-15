@@ -10,6 +10,7 @@ import pdb
 
 from sympy import Add, Mul, Number, Pow, Symbol, factor, srepr, sympify, Integer, Float
 from sympy.core.numbers import NegativeOne
+from qiskit.opflow import Z, I
 
 
 def create_clauses(
@@ -735,3 +736,40 @@ def get_symbols(term: Mul):
             args_no_coeff = ()
 
     return coeff, args_no_coeff
+
+
+def get_pauli_str(energy_term: Mul, bits):
+
+    """ 
+    It returns qiskit pauli string for a classical energy term. 
+    """
+
+    coeff, symbols = get_symbols(energy_term)
+    symbols = list(symbols)
+    vars = {}
+
+    if len(symbols) > 0:
+        for i in range(len(bits)):
+            s = bits[i]
+            vars[s] = False
+        
+        for i in range(len(symbols)):
+            if symbols[i] in vars.keys():
+                vars[symbols[i]] = True
+
+        if vars[bits[0]]:
+            ising = (I-Z)/2
+        else:
+            ising = I
+
+        for i in range(1, len(bits)):
+            if vars[bits[i]]:
+                ising ^= (I-Z)/2
+            else:
+                ising ^= I
+    else:
+        print("Constant terms in an ising hamiltonians are unimportatnt.")
+        return coeff
+
+    #print(coeff * ising)
+    return coeff * ising
