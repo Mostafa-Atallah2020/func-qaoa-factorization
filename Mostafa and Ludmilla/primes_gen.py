@@ -70,7 +70,7 @@ def get_primes(max_power, num_biprimes):
         while not is_prime_miller_test(p2):
             p2 += 1
 
-        if p1 >= p2 and p1 != 2 and p2 != 2:
+        if p1 >= p2 and p1 != 2 and p2 != 2 and (p1 * p2) <= (2 ** max_pow):
             result = [p1, p2, p1 * p2]
             if result not in primes_lst:
                 primes_lst.append(result)
@@ -88,8 +88,8 @@ if __name__ == "__main__":
     import csv
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--maxpow", type=int, default=3, required=False)
-    parser.add_argument("-n", "--number", type=int, default=100, required=False)
+    parser.add_argument("-p", "--maxpow", type=int, default=5, required=False)
+    parser.add_argument("-n", "--number", type=int, default=200, required=False)
     parser.add_argument("-r", "--replace", action="store_true")
     parser.add_argument("-d", "--dir", type=str, default="final_data_biprimes")
     args = parser.parse_args()
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     number_of_biprimes = args.number
     max_pow = args.maxpow
 
-    filename = f"./{args.dir}/biprimes_maxpow{max_pow}_number{number_of_biprimes}.csv"
+    filename = f"./{args.dir}/biprimes_maxpow_{max_pow}_number_{number_of_biprimes}.csv"
     if os.path.exists(filename) and not args.replace:
         raise ValueError(f'filename "{filename}" already exists - remove')
 
@@ -113,12 +113,4 @@ if __name__ == "__main__":
          # writing the data rows
         csvwriter.writerows(biprimes)
 
-    # np.savetxt(
-    #     filename,
-    #     np.array(biprimes),
-    #     delimiter=",",
-    #     fmt="%.d",
-    #     header="p, q, m=p*q",
-    #     comments="",
-    # )
     print(f"Data saved to {filename}")
