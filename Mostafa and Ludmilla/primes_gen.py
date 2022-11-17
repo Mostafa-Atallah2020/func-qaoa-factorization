@@ -70,7 +70,11 @@ def get_primes(max_power, num_biprimes):
         while not is_prime_miller_test(p2):
             p2 += 1
 
-        primes_lst.append([p1, p2, p1 * p2])
+        if p1 >= p2 and p1 != 2 and p2 != 2:
+            result = [p1, p2, p1 * p2]
+            if result not in primes_lst:
+                primes_lst.append(result)
+
     primes_lst = np.asarray(primes_lst)
     primes_lst = primes_lst[primes_lst[:, 2].argsort()]
     # for x in primes_lst:
@@ -84,7 +88,7 @@ if __name__ == "__main__":
     import csv
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--maxpow", type=int, default=20, required=False)
+    parser.add_argument("-p", "--maxpow", type=int, default=3, required=False)
     parser.add_argument("-n", "--number", type=int, default=100, required=False)
     parser.add_argument("-r", "--replace", action="store_true")
     parser.add_argument("-d", "--dir", type=str, default="final_data_biprimes")
