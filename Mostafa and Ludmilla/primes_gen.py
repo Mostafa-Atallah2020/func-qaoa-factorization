@@ -5,6 +5,7 @@ from ast import parse
 
 import numpy as np
 
+
 def is_prime_miller_test(n):
     # Implementation uses the Miller-Rabin Primality Test
     # The optimal number of rounds for this test is 40
@@ -70,7 +71,7 @@ def get_primes(max_power, num_biprimes):
         while not is_prime_miller_test(p2):
             p2 += 1
 
-        if p1 >= p2 and p1 != 2 and p2 != 2 and (p1 * p2) <= (2 ** max_pow):
+        if p1 >= p2 and (p1 * p2) <= (2**max_pow):
             result = [p1, p2, p1 * p2]
             if result not in primes_lst:
                 primes_lst.append(result)
@@ -78,7 +79,7 @@ def get_primes(max_power, num_biprimes):
     primes_lst = np.asarray(primes_lst)
     primes_lst = primes_lst[primes_lst[:, 2].argsort()]
     # for x in primes_lst:
-        # x[:2] = sorted(x[:2])
+    # x[:2] = sorted(x[:2])
     return primes_lst
 
 
@@ -88,7 +89,7 @@ if __name__ == "__main__":
     import csv
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--maxpow", type=int, default=5, required=False)
+    parser.add_argument("-p", "--maxpow", type=int, default=10, required=False)
     parser.add_argument("-n", "--number", type=int, default=200, required=False)
     parser.add_argument("-r", "--replace", action="store_true")
     parser.add_argument("-d", "--dir", type=str, default="final_data_biprimes")
@@ -106,11 +107,11 @@ if __name__ == "__main__":
     biprimes = get_primes(max_pow, number_of_biprimes)
     print(f"Computation finished ({time.time()-t} seconds)")
 
-    with open(filename, 'w') as csvfile:
+    with open(filename, "w") as csvfile:
         csvwriter = csv.writer(csvfile)
         # writing the header
         csvwriter.writerow(["p", "q", "m=p*q"])
-         # writing the data rows
+        # writing the data rows
         csvwriter.writerows(biprimes)
 
     print(f"Data saved to {filename}")
