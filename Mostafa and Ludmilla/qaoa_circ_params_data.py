@@ -21,18 +21,15 @@ if __name__ == "__main__":
 
     number_of_biprimes = 200
     max_pow = 5
-    #level = 3
     biprimes = []
     file_in = f"./final_data_biprimes/biprimes_maxpow_{max_pow}_number_{number_of_biprimes}.csv"
-    '''
-    file_out = (
-        f"./qaoa_data/qaoa_circ_params_max_power_{max_pow}_transpile_level_{level}.csv"
-    )
-    '''
+
     file_out = {}
     circ_params = {}
     for level in range(4):
-        file_out[level] = f"./qaoa_data/qaoa_circ_params_max_power_{max_pow}_transpile_level_{level}.csv"
+        file_out[
+            level
+        ] = f"./qaoa_data/qaoa_circ_params_max_power_{max_pow}_transpile_level_{level}.csv"
         circ_params[level] = []
 
     df = pd.read_csv(file_in)
@@ -52,7 +49,7 @@ if __name__ == "__main__":
         qc = qc[0]
 
         for level in range(4):
-            print(f'Optimization Level {level}')
+            print(f"Optimization Level {level}")
             t_circ = transpile(qc, basis_gates=["cx", "u3"], optimization_level=level)
             n_qubits = t_circ.num_qubits
             depth = t_circ.depth()
@@ -62,12 +59,11 @@ if __name__ == "__main__":
             n_gates = n_cnots + n_u3
 
             result = [m, n_qubits, depth, n_gates, n_cnots, n_u3]
-            print('results: ')
+            print("results: ")
             print(result)
             print(f"Computation finished ({round((time()-t)/60, 3)} min) \n")
             circ_params[level].append(result)
 
-    
     for level in range(4):
         with open(file_out[level], "w") as csvfile:
             csvwriter = csv.writer(csvfile)
