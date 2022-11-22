@@ -89,7 +89,7 @@ if __name__ == "__main__":
     import csv
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--maxpow", type=int, default=10, required=False)
+    parser.add_argument("-p", "--maxpow", type=int, default=40, required=False)
     parser.add_argument("-n", "--number", type=int, default=200, required=False)
     parser.add_argument("-r", "--replace", action="store_true")
     parser.add_argument("-d", "--dir", type=str, default="final_data_biprimes")

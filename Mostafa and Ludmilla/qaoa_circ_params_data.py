@@ -20,7 +20,7 @@ qaoa = QAOA(optimizer, quantum_instance=instance)
 if __name__ == "__main__":
 
     number_of_biprimes = 200
-    max_pow = 5
+    max_pow = 40
     biprimes = []
     file_in = f"./final_data_biprimes/biprimes_maxpow_{max_pow}_number_{number_of_biprimes}.csv"
 
