@@ -5,6 +5,7 @@ from ast import parse
 
 import numpy as np
 
+
 def is_prime_miller_test(n):
     # Implementation uses the Miller-Rabin Primality Test
     # The optimal number of rounds for this test is 40
@@ -74,7 +75,7 @@ def get_primes(max_power, num_biprimes):
     primes_lst = np.asarray(primes_lst)
     primes_lst = primes_lst[primes_lst[:, 2].argsort()]
     # for x in primes_lst:
-        # x[:2] = sorted(x[:2])
+    # x[:2] = sorted(x[:2])
     return primes_lst
 
 
@@ -102,11 +103,11 @@ if __name__ == "__main__":
     biprimes = get_primes(max_pow, number_of_biprimes)
     print(f"Computation finished ({time.time()-t} seconds)")
 
-    with open(filename, 'w') as csvfile:
+    with open(filename, "w") as csvfile:
         csvwriter = csv.writer(csvfile)
         # writing the header
         csvwriter.writerow(["p", "q", "m=p*q"])
-         # writing the data rows
+        # writing the data rows
         csvwriter.writerows(biprimes)
 
     # np.savetxt(

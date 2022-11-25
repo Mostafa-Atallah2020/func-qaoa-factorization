@@ -1,10 +1,10 @@
 from time import time
 
 # import numpy as np
-import csv 
+import csv
 from graph1_alt_func import assess_number_of_unknowns, create_clauses
 
-if __name__ == "__main__":  
+if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
@@ -13,7 +13,11 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--replace", action="store_true")
     parser.add_argument("--dirin", type=str, default="final_data_biprimes")
     parser.add_argument("--dirout", type=str, default="data_processing")
-    parser.add_argument("--no_prep", action='store_true', help = "Compute data for qubits required with no preprocessing")
+    parser.add_argument(
+        "--no_prep",
+        action="store_true",
+        help="Compute data for qubits required with no preprocessing",
+    )
     args = parser.parse_args()
 
     number_of_biprimes = args.number
@@ -24,8 +28,7 @@ if __name__ == "__main__":
     # if os.path.exists(filename) and not args.replace:
     #     raise ValueError(f'filename "{filename}" already exists - remove')
 
-
-    with open(filename, 'r') as csvfile:
+    with open(filename, "r") as csvfile:
         # creating a csv reader object
         csvreader = csv.reader(csvfile)
         header = next(csvreader)
@@ -72,14 +75,14 @@ if __name__ == "__main__":
         if result not in qubits_required_with_preprocessing:
             qubits_required_with_preprocessing.append(result)
     if args.no_prep:
-        with open(file_name_no_processing, 'w') as csvfile:
+        with open(file_name_no_processing, "w") as csvfile:
             csvwriter = csv.writer(csvfile)
-            csvwriter.writerow(["p", "q", "m", "unknowns","carry_bits"])
+            csvwriter.writerow(["p", "q", "m", "unknowns", "carry_bits"])
             csvwriter.writerows(qubits_required_no_preprocessing)
 
-    with open(file_name_with_preprocessing, 'w') as csvfile:
+    with open(file_name_with_preprocessing, "w") as csvfile:
         csvwriter = csv.writer(csvfile)
-        csvwriter.writerow(["p", "q", "m", "unknowns","carry_bits"])
+        csvwriter.writerow(["p", "q", "m", "unknowns", "carry_bits"])
         csvwriter.writerows(qubits_required_with_preprocessing)
 
     # np.savetxt(
