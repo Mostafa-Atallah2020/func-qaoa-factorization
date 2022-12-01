@@ -3,7 +3,7 @@
 
 
 import math
-from qiskit import QuantumCircuit, QuantumRegister, transpile
+from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, transpile
 from qiskit.circuit import Parameter
 from qiskit.circuit.library.arithmetic.adders import DraperQFTAdder
 import numpy as np
