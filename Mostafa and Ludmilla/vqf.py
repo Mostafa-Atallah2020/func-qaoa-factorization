@@ -795,5 +795,6 @@ def get_cost_hamiltonian(m: int):
                 ising_terms.append(pauli_str)
 
     hamiltonian = sum(ising_terms)
+    hamiltonian = hamiltonian.reduce()
     # print(str(hamiltonian))
     return hamiltonian
