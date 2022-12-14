@@ -368,7 +368,8 @@ def QAOA_modulo_layer_circuit(N):
             qc.x(qr_R[i])      
     if N[-1]:
         qc.x(qr_Q[0])
-    
+        
+    qc.x(qr_p[0]) #Initialize the LSB to 1
     qc.h(qr_p[1:n_p])   # Create a superpoition of divisors upto 
     
     
