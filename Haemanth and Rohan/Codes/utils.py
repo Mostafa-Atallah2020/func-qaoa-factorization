@@ -411,8 +411,8 @@ def construct_and_get_info_of_QAOA_modulo_layer_circuit(N_list,lvl=1):
 
 
     # Construct circuits and get their information - qubits, depth, gates for all N values in N_list
-    for it, i in N_list:
-        print(f"Getting data for entry #{it} of the list: {i}...")
+    for i in N_list:
+        print(f"Getting data for {i}...")
         qc = QAOA_modulo_layer_circuit(i)
 
         # Transpiling
