@@ -8,9 +8,9 @@ refer to https://github.com/mstechly/vqf/blob/master/research/2019_05_04_resourc
 import math as mth
 import pdb
 
-from sympy import Add, Mul, Number, Pow, Symbol, factor, srepr, sympify, Integer, Float
+from qiskit.opflow import I, Z
+from sympy import Add, Float, Integer, Mul, Number, Pow, Symbol, factor, srepr, sympify
 from sympy.core.numbers import NegativeOne
-from qiskit.opflow import Z, I
 
 
 def create_clauses(

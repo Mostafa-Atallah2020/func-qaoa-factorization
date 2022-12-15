@@ -1,7 +1,7 @@
-from time import time
-
 # import numpy as np
 import csv
+from time import time
+
 from graph1_alt_func import assess_number_of_unknowns, create_clauses
 
 if __name__ == "__main__":

@@ -1,8 +1,10 @@
+import csv
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
-import csv
 from scipy.optimize import curve_fit
-import math
+
 
 def exp_func(x, a, b, c):
     return a * np.power(x, b) + c
@@ -10,7 +12,7 @@ def exp_func(x, a, b, c):
 
 def get_data_qubits_biprimes(maxpow):
     file_name_with_preprocessing = (
-        f"./data_processing/preprocessing_{maxpow}_results.csv"
+        f"./data_processing_large/preprocessing_{maxpow}_results.csv"
     )
 
     qubits_required_with_preprocessing = []
@@ -32,14 +34,15 @@ def get_data_qubits_biprimes(maxpow):
     return biprimes, qubits
 
 
-def make_plots(biprimes, qubits, maxpow, which_plot=None, extension ="pdf"):
+def make_plots(biprimes, qubits, maxpow, which_plot=None, extension="pdf"):
     red, blue = True, True
 
-    plot_name = f"./plots/reprocessing_{maxpow}"
+    plot_name_blue = f"./plots/reprocessing_{maxpow}_blue_plot.{extension}"
+    plot_name_red = f"./plots/reprocessing_{maxpow}_red_plot.{extension}"
 
-    xdata = np.asarray(list(map(math.log2,biprimes)))
+
+    xdata = np.asarray(list(map(math.log2, biprimes)))
     ydata = qubits
-
 
     assert which_plot in [None, "red", "blue"], "invalid option"
     if which_plot == "red":
@@ -47,20 +50,15 @@ def make_plots(biprimes, qubits, maxpow, which_plot=None, extension ="pdf"):
     elif which_plot == "blue":
         red = False
 
-    plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "serif",
-    "font.size": 12
-    })
-    figsize = figsize = (3, 2.5) 
+    plt.rcParams.update({"text.usetex": True, "font.family": "serif", "font.size": 12})
+    figsize = figsize = (6, 5)
     if red:
-        fig1 = plt.figure(figsize = figsize)
+        fig1 = plt.figure(figsize=figsize)
         ax1 = fig1.add_subplot(1, 1, 1)
 
         popt, pcov = curve_fit(exp_func, xdata, ydata)
 
-
-        ax1.scatter(biprimes, qubits, label="Classical preprocessing", s=10)
+        ax1.scatter(biprimes, qubits, s=10)
         ax1.plot(
             biprimes,
             exp_func(xdata, *popt),
@@ -69,18 +67,17 @@ def make_plots(biprimes, qubits, maxpow, which_plot=None, extension ="pdf"):
         )
 
         ax1.set_xlabel("Biprime to be factored")
-        ax1.set_ylabel("Number of qubit required")
+        ax1.set_ylabel("Number of qubits required")
         ax1.set_xscale("log", base=2)
-        ax1.set_ybound(lower = 0)
+        ax1.set_ybound(lower=0)
         plt.legend()
-        plt.savefig(f"{plot_name}_blue_plot.{extension}")
+        plt.savefig(plot_name_red)
 
     if blue:
-        fig2 = plt.figure(figsize= figsize)
+        fig2 = plt.figure(figsize=figsize)
         ax2 = fig2.add_subplot(1, 1, 1)
 
         popt, pcov = curve_fit(exp_func, xdata, ydata)
-
 
         plt.scatter(xdata, ydata)
         plt.plot(
@@ -89,14 +86,13 @@ def make_plots(biprimes, qubits, maxpow, which_plot=None, extension ="pdf"):
             "r--",
             label="fit: a=%5.5f, b=%5.5f, c=%5.5f" % tuple(popt),
         )
-        ax2.set_xlabel("Maximum Power")
-        ax2.set_ylabel("Number of qubit required")
-        ax2.set_ybound(lower = 0)
+        ax2.set_xlabel("Maximum Power (base 2)")
+        ax2.set_ylabel("Number of qubits required")
+        ax2.set_ybound(lower=0)
 
         # print(plt.ylim())
         plt.legend()
-        plt.savefig(f"{plot_name}_red_plot.{extension}")
-
+        plt.savefig(plot_name_blue)
 
 
 def get_fit(xdata, ydata, num_of_chunks):

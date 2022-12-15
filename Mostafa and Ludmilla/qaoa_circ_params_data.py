@@ -2,15 +2,14 @@
 Generate circuit parameters for QAOA of vqf algorithm.
 """
 import csv
-import pandas as pd
 from time import time
 
-from vqf import get_cost_hamiltonian
-
-from qiskit.utils import algorithm_globals
-from qiskit.algorithms.optimizers import COBYLA
+import pandas as pd
 from qiskit import Aer, transpile
 from qiskit.algorithms import QAOA
+from qiskit.algorithms.optimizers import COBYLA
+from qiskit.utils import algorithm_globals
+from vqf import get_cost_hamiltonian
 
 algorithm_globals.random_seed = 10598
 optimizer = COBYLA()

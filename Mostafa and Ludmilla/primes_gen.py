@@ -85,8 +85,8 @@ def get_primes(max_power, num_biprimes):
 
 if __name__ == "__main__":
     import argparse
-    import os
     import csv
+    import os
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--maxpow", type=int, default=40, required=False)
