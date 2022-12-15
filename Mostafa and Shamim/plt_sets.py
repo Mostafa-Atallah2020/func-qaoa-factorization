@@ -54,7 +54,7 @@ def make_plots(biprimes, qubits, maxpow, which_plot=None, extension ="pdf"):
     })
     figsize = figsize = (3, 2.5) 
     if red:
-        fig1 = plt.figure()
+        fig1 = plt.figure(figsize = figsize)
         ax1 = fig1.add_subplot(1, 1, 1)
 
         popt, pcov = curve_fit(exp_func, xdata, ydata)
@@ -76,7 +76,7 @@ def make_plots(biprimes, qubits, maxpow, which_plot=None, extension ="pdf"):
         plt.savefig(f"{plot_name}_blue_plot.{extension}")
 
     if blue:
-        fig2 = plt.figure()
+        fig2 = plt.figure(figsize= figsize)
         ax2 = fig2.add_subplot(1, 1, 1)
 
         popt, pcov = curve_fit(exp_func, xdata, ydata)
