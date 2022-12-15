@@ -32,7 +32,7 @@ def get_data_qubits_biprimes(maxpow):
     return biprimes, qubits
 
 
-def make_plots(biprimes, qubits, maxpow, which_plot=None):
+def make_plots(biprimes, qubits, maxpow, which_plot=None, extension ="pdf"):
     red, blue = True, True
 
     plot_name = f"./plots/reprocessing_{maxpow}"
@@ -47,6 +47,12 @@ def make_plots(biprimes, qubits, maxpow, which_plot=None):
     elif which_plot == "blue":
         red = False
 
+    plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.size": 12
+    })
+    figsize = figsize = (3, 2.5) 
     if red:
         fig1 = plt.figure()
         ax1 = fig1.add_subplot(1, 1, 1)
@@ -67,7 +73,7 @@ def make_plots(biprimes, qubits, maxpow, which_plot=None):
         ax1.set_xscale("log", base=2)
         ax1.set_ybound(lower = 0)
         plt.legend()
-        plt.savefig(f"{plot_name}_blue_plot.png")
+        plt.savefig(f"{plot_name}_blue_plot.{extension}")
 
     if blue:
         fig2 = plt.figure()
@@ -89,7 +95,7 @@ def make_plots(biprimes, qubits, maxpow, which_plot=None):
 
         # print(plt.ylim())
         plt.legend()
-        plt.savefig(f"{plot_name}_red_plot.png")
+        plt.savefig(f"{plot_name}_red_plot.{extension}")
 
 
 
