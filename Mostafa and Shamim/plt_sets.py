@@ -69,7 +69,7 @@ def make_plots(biprimes, qubits, maxpow, which_plot=None, extension="pdf"):
         ax1.set_xlabel("Biprime to be factored")
         ax1.set_ylabel("Number of qubits required")
         ax1.set_xscale("log", base=2)
-        ax1.set_ybound(lower=0)
+        #ax1.set_ybound(lower=0)
         plt.legend()
         plt.savefig(plot_name_red)
 
@@ -88,7 +88,7 @@ def make_plots(biprimes, qubits, maxpow, which_plot=None, extension="pdf"):
         )
         ax2.set_xlabel("Maximum Power (base 2)")
         ax2.set_ylabel("Number of qubits required")
-        ax2.set_ybound(lower=0)
+        #ax2.set_ybound(lower=0)
 
         # print(plt.ylim())
         plt.legend()
