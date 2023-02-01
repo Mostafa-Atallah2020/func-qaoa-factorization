@@ -2,6 +2,32 @@
 An alternative approach to generate graph1 of VQF paper https://arxiv.org/abs/1808.08927
 
 refer to https://github.com/mstechly/vqf/blob/master/research/2019_05_04_resources_needed/src/
+
+This is script for preprocessing part of the VQF algorithm.
+Notation used here refers to section IIA and IIB from the VQF article (see readme).
+I specific equation is refered, it's equation from the paper.
+Since the same variables are being used throughout the whole script, 
+I've decided to write their description here to avoid redundancy.
+** Arguments **
+verbose 
+Boolean flag.
+If True, information about the execution will be printed to the console.
+m_dict, p_dict, q_dict
+Dictionaries representing numbers m, p and q.
+Keys are indices of the bits.
+Values are integers (0 or 1) or sympy expressions representing the variables (see eq. 1).
+z_dict
+Dictionary representing carry bits.
+Keys are tuples of integers, where the first one is a starting bit and the second one is a target bit.
+Values are the same as in case of p_dict and q_dict.
+clauses
+A list of clauses corresponding to the equations (2) and (3). 
+They are represented as sympy expressions.
+known_expressions
+A dictionary of expressions which has been deducted from the clauses.
+Keys are sympy expressions, either simple ones (e.g.: q_0), which represent single unknowns,
+or more complex (e.g.: p_1*q_1). 
+Values are either sympy expressions or integers (0 or 1).
 """
 
 # import numpy as
@@ -9,7 +35,20 @@ import math as mth
 import pdb
 
 from qiskit.opflow import I, Z
-from sympy import Add, Float, Integer, Mul, Number, Pow, Symbol, factor, srepr, sympify
+from sympy import (
+    Add,
+    Float,
+    Integer,
+    Mul,
+    Number,
+    Pow,
+    Symbol,
+    factor,
+    srepr,
+    sympify,
+    Eq,
+    Symbol,
+)
 from sympy.core.numbers import NegativeOne
 
 
@@ -274,6 +313,20 @@ def apply_preprocessing_rules(clauses, verbose=True):
 
 
 def simplify_clause(clause, known_expressions):
+    """
+    Simplifies a clause using given known expressions.
+
+    Args:
+    -----
+
+        `clause` (`sympy.core.expression.Expr`): A sympy expression representing a clause.
+        `known_expressions` (`dict`): A dictionary of known sympy expressions.
+
+    Returns:
+    --------
+
+        `sympy.core.expression.Expr`: The simplified clause.
+    """
     simplified_clause = clause.subs(known_expressions).expand()
     if simplified_clause.func == Add:
         # Simplifies x**2 -> x, since the variables we use are binary.
@@ -300,6 +353,38 @@ def simplify_clause(clause, known_expressions):
             if factored_clause.func == Mul:
                 if isinstance(factored_clause.args[0], Number):
                     simplified_clause = simplified_clause / factored_clause.args[0]
+
+    return simplified_clause
+
+
+def simplify_clause_alt(clause, known_expressions):
+    """
+    Performs simplification of clauses in an efficient manner.
+
+    Args:
+    -----
+
+        `clause` (`sympy.Expr`): A single clause in the form of a sympy expression.
+        `known_expressions` (`dict`): A dictionary of expressions that have been deduced from the clauses.
+                                Keys are sympy expressions, either simple ones (e.g.: `q_0`),
+                                which represent single unknowns, or more complex (e.g.: `p_1*q_1`).
+                                   Values are either sympy expressions or integers (0 or 1).
+    Returns:
+    --------
+
+        simplified_clause (sympy.Expr): The simplified form of the input `clause`.
+    """
+    simplified_clause = clause.subs(known_expressions).expand()
+
+    for term in simplified_clause.args:
+        if isinstance(term, Pow) and term.exp == 2:
+            simplified_clause = simplified_clause.subs({term: term.base})
+        elif isinstance(term, Mul):
+            for subterm in term.args:
+                if isinstance(subterm, Pow) and subterm.exp == 2:
+                    simplified_clause = simplified_clause.subs({subterm: subterm.base})
+
+    simplified_clause = factor(simplified_clause)
 
     return simplified_clause
 
@@ -493,6 +578,23 @@ def apply_rule_of_equality(clause, known_expressions, verbose=False):
 
 
 def apply_rule_1(clause, known_expressions, verbose=False):
+    """
+    Apply Rule 1 from eq. (5) to extend `known_expressions`.
+
+    Args:
+    ------
+
+    `clause` (sympy expression): Represents a clause in the preprocessing of the VQF algorithm.
+    `known_expressions` (`dict`): Contains expressions that have been deduced from the clauses.
+    Keys are sympy expressions, either simple (e.g. `q_0`) or complex (e.g. `p_1 * q_1`).
+    Values are either sympy expressions or integers (0 or 1).
+    `verbose` (`bool`, `optional`): If `True`, information about the execution will be printed to the console.
+
+    Returns:
+    --------
+
+    `known_expressions` (`dict`): The updated dictionary of deduced expressions.
+    """
     clause_variables = list(clause.free_symbols)
     if clause.func == Add and len(clause.args) == 2:
         if len(clause_variables) == 2:
@@ -501,6 +603,32 @@ def apply_rule_1(clause, known_expressions, verbose=False):
             rule = x * y - 1
             substitution = clause.subs({clause_variables[0]: x, clause_variables[1]: y})
             if substitution - rule == 0:
+                if verbose:
+                    print("Rule 1 applied!", clause)
+                known_expressions[clause_variables[0]] = 1
+                known_expressions[clause_variables[1]] = 1
+    return known_expressions
+
+
+def apply_rule_1_alt(clause, known_expressions, verbose=False):
+    """
+    Extends `known_expressions` by applying rule 1 from eq. (5).
+
+    Args:
+        `clause`: sympy expression representing a clause.
+        `known_expressions` (`dict`): See module documentation at the top.
+        `verbose` (`bool`): See module documentation at the top.
+    Returns:
+        `known_expressions` (`dict`): See module documentation at the top.
+    """
+
+    clause_variables = list(clause.free_symbols)
+    if clause.func == Add and len(clause.args) == 2:
+        if len(clause_variables) == 2:
+            x = Symbol("x")
+            y = Symbol("y")
+            rule = x * y - 1
+            if Eq(clause, rule.subs({x: clause_variables[0], y: clause_variables[1]})):
                 if verbose:
                     print("Rule 1 applied!", clause)
                 known_expressions[clause_variables[0]] = 1
@@ -680,8 +808,20 @@ def split_list(arr, size):
 
 def get_classical_energy(m: int, apply_rules=False):
     """
-    It calculates the classical energy for the set of classically simplified clauses for a prime m.
-    refer to eq(6) in https://arxiv.org/abs/1808.08927
+    Calculates the classical energy for the set of classically simplified clauses for a prime m.
+
+    Args:
+    -----
+
+    - `m (int)`: Prime number to calculate the classical energy for.
+    - `apply_rules (bool)`: If `True`, applies rules for simplifying the energy expression. Defaults to `False`s.
+
+    Returns:
+    --------
+
+    - SymPy expression representing the classical energy.
+
+    Refer to equation (6) in the VQF paper (https://arxiv.org/abs/1808.08927) for more information.
     """
     _, _, _, clauses = create_clauses(m, apply_preprocessing=False, verbose=False)
 
@@ -777,7 +917,29 @@ def get_pauli_str(energy_term: Mul, bits):
 
 def get_cost_hamiltonian(m: int):
     """
-    It calculates the factoring hamiltonian for a biprime m. refer to eq(7) in https://arxiv.org/abs/1808.08927
+    Calculates the factoring Hamiltonian for a biprime `m`.
+
+    Returns:
+    -------
+
+    `hamiltonian` : sympy expression
+        The Hamiltonian representing the factoring of the biprime `m`, as defined in eq(7) in https://arxiv.org/abs/1808.08927.
+
+    Note:
+    ----
+
+    The calculation of the Hamiltonian involves several steps:
+
+        1) Calculating the classical energy using `get_classical_energy` function.
+
+        2) Extracting the terms and bits from the classical energy.
+
+        3) Converting each term into a Pauli string representation.
+
+        4) Summing up all the Pauli strings to get the final Hamiltonian.
+
+        5) Reducing the final Hamiltonian by combining terms with similar Pauli strings.
+
     """
     energy = get_classical_energy(m, apply_rules=True)
     terms = energy.args[::-1]
