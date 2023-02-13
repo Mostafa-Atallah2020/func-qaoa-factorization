@@ -284,8 +284,8 @@ def apply_preprocessing_rules(clauses, verbose=True):
         if clause == 0:
             continue
 
-        # known_expressions = apply_z_rule_1(clause, known_expressions, verbose)
-        # clause = simplify_clause(clause, known_expressions)
+        known_expressions = apply_z_rule_1(clause, known_expressions, verbose)
+        clause = simplify_clause(clause, known_expressions)
 
         known_expressions = apply_rule_1(clause, known_expressions, verbose)
         clause = simplify_clause(clause, known_expressions)
@@ -299,11 +299,11 @@ def apply_preprocessing_rules(clauses, verbose=True):
         known_expressions = apply_rules_4_and_5(clause, known_expressions, verbose)
         clause = simplify_clause(clause, known_expressions)
 
-        # known_expressions = apply_rule_of_equality(clause, known_expressions, verbose)
-        # clause = simplify_clause(clause, known_expressions)
+        known_expressions = apply_rule_of_equality(clause, known_expressions, verbose)
+        clause = simplify_clause(clause, known_expressions)
 
-        # known_expressions = apply_z_rule_2(clause, known_expressions, verbose)
-        # clause = simplify_clause(clause, known_expressions)
+        known_expressions = apply_z_rule_2(clause, known_expressions, verbose)
+        clause = simplify_clause(clause, known_expressions)
 
     simplified_clauses = []
     for clause in clauses:
