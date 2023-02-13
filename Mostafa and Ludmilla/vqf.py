@@ -806,7 +806,7 @@ def split_list(arr, size):
         yield arr[i : i + size]
 
 
-def get_classical_energy(m: int, apply_rules=False):
+def get_classical_energy(m: int, apply_rules=False, verbose=False):
     """
     Calculates the classical energy for the set of classically simplified clauses for a prime m.
 
@@ -823,28 +823,22 @@ def get_classical_energy(m: int, apply_rules=False):
 
     Refer to equation (6) in the VQF paper (https://arxiv.org/abs/1808.08927) for more information.
     """
-    _, _, _, clauses = create_clauses(m, apply_preprocessing=False, verbose=False)
-
-    expr = clauses[0] ** 2
-    for i in range(1, len(clauses)):
-        expr += clauses[i] ** 2
-
-    energy = expr.expand()
-
-    if apply_rules:
-        known_expressions = {}
-        known_expressions = apply_rule_1(energy, known_expressions)
-        energy = simplify_clause_alt(energy, known_expressions)
-
-        known_expressions = apply_rule_2(energy, known_expressions)
-        energy = simplify_clause_alt(energy, known_expressions)
-
-        known_expressions = apply_rule_3(energy, known_expressions)
-        energy = simplify_clause_alt(energy, known_expressions)
-
-        known_expressions = apply_rules_4_and_5(energy, known_expressions)
-        energy = simplify_clause_alt(energy, known_expressions)
-
+    # create_clauses() creates a list of clauses from the given expression
+    # and applies preprocessing operations (if apply_preprocessing is True)
+    _, _, _, clauses = create_clauses(m, apply_preprocessing=apply_rules, verbose=verbose)
+    
+    # Calculate the energy of the expression
+    # by building an equation using each clause in the given expression
+    energy = sum([clauses[i] ** 2 for i in range(0, len(clauses))])
+    
+    # Expand the expression to simplify the calculation
+    energy = energy.expand()
+    
+    # Apply the preprocessing rules to the expression, if it is necessary
+    if apply_rules: 
+        # Simplify the expression with known expressions, if necessary
+        energy = simplify_clause_alt(energy, known_expressions={})
+    
     return energy
 
 
