@@ -79,7 +79,7 @@ def create_clauses(
 
     final_clauses = []
     for clause in clauses:
-        final_clauses.append(simplify_clause(clause, known_symbols))
+        final_clauses.append(simplify_clause_alt(clause, known_symbols))
 
     z_dict = {key: value for key, value in z_dict.items() if value != 0}
 
@@ -277,7 +277,7 @@ def apply_preprocessing_rules(clauses, verbose=True):
     counter = 0
 
     for clause in clauses:
-        clause = simplify_clause(clause, known_expressions)
+        clause = simplify_clause_alt(clause, known_expressions)
         if verbose and clause != 0:
             print("Current clause", counter, ":", clause)
         counter += 1
@@ -285,29 +285,29 @@ def apply_preprocessing_rules(clauses, verbose=True):
             continue
 
         known_expressions = apply_z_rule_1(clause, known_expressions, verbose)
-        clause = simplify_clause(clause, known_expressions)
+        clause = simplify_clause_alt(clause, known_expressions)
 
         known_expressions = apply_rule_1(clause, known_expressions, verbose)
-        clause = simplify_clause(clause, known_expressions)
+        clause = simplify_clause_alt(clause, known_expressions)
 
         known_expressions = apply_rule_2(clause, known_expressions, verbose)
-        clause = simplify_clause(clause, known_expressions)
+        clause = simplify_clause_alt(clause, known_expressions)
 
         known_expressions = apply_rule_3(clause, known_expressions, verbose)
-        clause = simplify_clause(clause, known_expressions)
+        clause = simplify_clause_alt(clause, known_expressions)
 
         known_expressions = apply_rules_4_and_5(clause, known_expressions, verbose)
-        clause = simplify_clause(clause, known_expressions)
+        clause = simplify_clause_alt(clause, known_expressions)
 
         known_expressions = apply_rule_of_equality(clause, known_expressions, verbose)
-        clause = simplify_clause(clause, known_expressions)
+        clause = simplify_clause_alt(clause, known_expressions)
 
         known_expressions = apply_z_rule_2(clause, known_expressions, verbose)
-        clause = simplify_clause(clause, known_expressions)
+        clause = simplify_clause_alt(clause, known_expressions)
 
     simplified_clauses = []
     for clause in clauses:
-        simplified_clause = simplify_clause(clause, known_expressions)
+        simplified_clause = simplify_clause_alt(clause, known_expressions)
         simplified_clauses.append(simplified_clause)
     return simplified_clauses, known_expressions
 
@@ -530,7 +530,7 @@ def apply_z_rule_2(clause, known_expressions, verbose=False):
             if isinstance(new_term.args[0], Number):
                 new_term = new_term / new_term.args[0]
             if "Pow" in srepr(new_term):
-                new_term = simplify_clause(new_term, {})
+                new_term = simplify_clause_alt(new_term, {})
             new_known_expressions[new_term] = 0
 
     if len(new_known_expressions) != 0:
@@ -834,16 +834,16 @@ def get_classical_energy(m: int, apply_rules=False):
     if apply_rules:
         known_expressions = {}
         known_expressions = apply_rule_1(energy, known_expressions)
-        energy = simplify_clause(energy, known_expressions)
+        energy = simplify_clause_alt(energy, known_expressions)
 
         known_expressions = apply_rule_2(energy, known_expressions)
-        energy = simplify_clause(energy, known_expressions)
+        energy = simplify_clause_alt(energy, known_expressions)
 
         known_expressions = apply_rule_3(energy, known_expressions)
-        energy = simplify_clause(energy, known_expressions)
+        energy = simplify_clause_alt(energy, known_expressions)
 
         known_expressions = apply_rules_4_and_5(energy, known_expressions)
-        energy = simplify_clause(energy, known_expressions)
+        energy = simplify_clause_alt(energy, known_expressions)
 
     return energy
 
