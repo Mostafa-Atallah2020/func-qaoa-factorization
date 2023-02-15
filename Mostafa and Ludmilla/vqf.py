@@ -209,7 +209,8 @@ def create_basic_clauses(m_dict, p_dict, q_dict, z_dict, apply_preprocessing=Tru
 
         for j in range(i + 1):
             clause += z_dict.get((j, i), 0)
-        if type(clause) == int:
+
+        if isinstance(clause, int):
             clause = sympify(clause)
         if apply_preprocessing and clause != 0:
             # This part exists in order to limit the number of z terms.
@@ -265,7 +266,7 @@ def solve_symmetric_case(p_dict, q_dict):
         return p_dict, q_dict
 
     for key in p_dict.keys():
-        if type(p_dict[key]) != int or type(q_dict[key]) != int:
+        if not isinstance(p_dict[key], int) or not isinstance(q_dict[key], int):
             if p_dict[key] + q_dict[key] == 1:
                 p_dict[key] = 1
                 q_dict[key] = 0
@@ -444,9 +445,10 @@ def apply_z_rule_2(clause, known_expressions, verbose=False):
                     odd_terms.append(term)
 
     if len(odd_terms) == 1:
-        if type(odd_terms[0]) == Symbol:
+        if isinstance(odd_terms[0], Symbol):
             new_known_expressions[odd_terms[0]] = 0
-        elif type(odd_terms[0]) == Mul:
+
+        elif isinstance(odd_terms[0], Mul):
             term = odd_terms[0]
             if isinstance(term.args[0], Number):
                 term = term / term.args[0]
@@ -463,9 +465,9 @@ def apply_z_rule_2(clause, known_expressions, verbose=False):
             non_number_index = 0
         if non_number_index is not None:
             term = odd_terms[non_number_index]
-            if type(term) == Symbol:
+            if isinstance(term, Symbol):
                 new_known_expressions[term] = 1
-            elif type(term) == Mul:
+            elif isinstance(term, Mul):
                 for arg in term.args:
                     if not isinstance(arg, Number):
                         new_known_expressions[arg] = 1
@@ -486,11 +488,11 @@ def apply_z_rule_2(clause, known_expressions, verbose=False):
             variable_0 = odd_terms[1 - non_q_index]
             variable_1 = odd_terms[non_q_index]
 
-            if type(variable_0) == Mul:
+            if isinstance(variable_0, Mul):
                 if isinstance(variable_0.args[0], Number):
                     variable_0 = variable_0 / variable_0.args[0]
 
-            if type(variable_1) == Mul:
+            if isinstance(variable_1, Mul):
                 if isinstance(variable_1.args[0], Number):
                     variable_1 = variable_1 / variable_1.args[0]
 
@@ -504,7 +506,7 @@ def apply_z_rule_2(clause, known_expressions, verbose=False):
                     # (p=29, q=23, m=667)
                     # pdb.set_trace()
                     pass
-                elif type(term) == Mul:
+                elif isinstance(term, Mul):
                     if len(even_positive_terms) == 0:
                         term = term / term.args[0]
                         new_known_expressions[term] = variable_0
@@ -738,7 +740,7 @@ def update_dictionaries(known_expressions, p_dict, q_dict, z_dict):
 
     for x_dict in [p_dict, q_dict, z_dict]:
         for index, value in x_dict.items():
-            if type(value) in [Symbol, Add, Mul]:
+            if isinstance(value, (Symbol, Add, Mul)):
                 x_dict[index] = x_dict[index].subs(all_known_expressions)
 
     return p_dict, q_dict, z_dict
@@ -761,7 +763,7 @@ def extract_unknowns(x_dict):
     all_values = list(x_dict.values())
     list_of_variables = []
     for x in all_values:
-        if type(x) != int and len(x.free_symbols) != 0:
+        if not isinstance(x, int) and len(x.free_symbols) != 0:
             list_of_variables += list(x.free_symbols)
 
     unknowns = list(set(list_of_variables))
@@ -825,20 +827,20 @@ def get_classical_energy(m: int, apply_rules=False, verbose=False):
     """
     # create_clauses() creates a list of clauses from the given expression
     # and applies preprocessing operations (if apply_preprocessing is True)
-    _, _, _, clauses = create_clauses(m, apply_preprocessing=apply_rules, verbose=verbose)
-    
+    _, _, _, clauses = create_clauses(
+        m, apply_preprocessing=apply_rules, verbose=verbose
+    )
     # Calculate the energy of the expression
     # by building an equation using each clause in the given expression
-    energy = sum([clauses[i] ** 2 for i in range(0, len(clauses))])
-    
+    energy = sum([clauses[i] ** 2 for i in range(len(clauses))])
     # Expand the expression to simplify the calculation
     energy = energy.expand()
-    
+
     # Apply the preprocessing rules to the expression, if it is necessary
-    if apply_rules: 
+    if apply_rules:
         # Simplify the expression with known expressions, if necessary
         energy = simplify_clause_alt(energy, known_expressions={})
-    
+
     return energy
 
 
@@ -848,11 +850,7 @@ def get_symbols(term: Mul):
     """
     args = term.args
     try:
-        if (
-            type(args[0]) == Integer
-            or type(args[0]) == Float
-            or type(args[0]) == NegativeOne
-        ):
+        if isinstance(args[0], (Integer, Float, NegativeOne)):
             coeff = float(args[0])
             args_no_coeff = args[1:]
 
@@ -861,7 +859,7 @@ def get_symbols(term: Mul):
             args_no_coeff = args[:]
 
     except:
-        if len(args) == 0 and type(term) == Symbol:
+        if len(args) == 0 and isinstance(term, Symbol):
             coeff = 1
             args_no_coeff = (term,)
 
@@ -944,10 +942,10 @@ def get_cost_hamiltonian(m: int):
         t = terms[i]
 
         # ignoring constant terms in the ising hamiltonians
-        if type(t) != int:
+        if not isinstance(t, int):
             pauli_str = get_pauli_str(t, bits)
             # print(str(pauli_str) + "\n")
-            if type(pauli_str) != type(None):
+            if not isinstance(pauli_str, type(None)):
                 ising_terms.append(pauli_str)
 
     hamiltonian = sum(ising_terms)
