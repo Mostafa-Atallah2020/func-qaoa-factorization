@@ -3,7 +3,6 @@ from sympy import (
     Add,
     Mul,
     Number,
-    Pow,
     Symbol,
     expand,
     factor,
@@ -191,8 +190,6 @@ def create_clause1(m, p, q, z):
     return clauses
 
 
-# In[6]:
-
 
 def create_clause2(m, p, q, z):
     """there is another  version  of it called create_clause2 where we have taken all the z.get possible  and then we have let our rule 1 to cut all extra z values"""
@@ -265,7 +262,6 @@ def rule_21(clause, expression):
     return expression
 
 
-# In[8]:
 
 
 def rule_31(clause, expression):
@@ -288,9 +284,6 @@ def rule_31(clause, expression):
     return expression
 
 
-# In[9]:
-
-
 def rule_11(clause, expression):
     negative = []
 
@@ -311,8 +304,6 @@ def rule_11(clause, expression):
     return expression
 
 
-# In[10]:
-
 
 def rule_51(clause, known_expressions):
 
@@ -327,9 +318,6 @@ def rule_51(clause, known_expressions):
 
                         known_expressions[symbol] = 1
     return known_expressions
-
-
-# In[11]:
 
 
 def rule_41(clause, expression):
@@ -347,9 +335,6 @@ def rule_41(clause, expression):
             for t in clause.args:
                 if t != count:
                     expression[t] = 1
-
-
-# In[12]:
 
 
 def rule_61(clause, expression):
@@ -373,9 +358,6 @@ def rule_61(clause, expression):
         rule = Symbol("x")
         if sub_clause - rule == 0:
             expression[list(clause.free_symbols)[0]] = 0
-
-
-# In[13]:
 
 
 def rule_71(clause, expression):

@@ -1,22 +1,14 @@
-import numpy as np
 from numpy import pi
 
 # importing Qiskit
 from qiskit import (
-    IBMQ,
     Aer,
     ClassicalRegister,
     QuantumCircuit,
     QuantumRegister,
     assemble,
-    execute,
     transpile,
 )
-from qiskit.providers.ibmq import least_busy
-from qiskit.tools.monitor import job_monitor
-from qiskit.visualization import plot_bloch_multivector, plot_histogram
-
-# In[ ]:
 
 
 def swap_circuit(quantum_circuit, qubit_array):
@@ -68,9 +60,6 @@ def adder_block(number_of_qubits, multiplier):
     return qc
 
 
-# In[ ]:
-
-
 def process_numbers(a, b):
 
     if len(a) > len(b):
@@ -89,9 +78,6 @@ def initialize_circuit(qc, a_num, b_num, n):
         if int(b_num[i]):
             qc.x(i)
     return qc
-
-
-# In[ ]:
 
 
 def quantum_adder(a, b):
@@ -114,8 +100,6 @@ def quantum_adder(a, b):
     return qc
 
 
-# In[ ]:
-
 
 def measure_adder(qc, n):
     qc.measure(range(2 * n)[n:], range(n))
@@ -126,8 +110,6 @@ def measure_adder(qc, n):
     counts = result.get_counts()
     return list(counts)
 
-
-# In[ ]:
 
 
 def quantum_multiplier(a, b):
@@ -155,9 +137,6 @@ def quantum_multiplier(a, b):
     qc = IQFT(qc, range(3 * n)[2 * n :])
 
     return qc
-
-
-# In[ ]:
 
 
 def measure_multiplier(qc, n):
