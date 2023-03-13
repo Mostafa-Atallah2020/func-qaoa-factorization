@@ -21,4 +21,4 @@ jobs:
     - name: Analysing the code with pylint 
       working-directory: src
       run: |
-        pylint $(git ls-files './*.py')
+        pylint --fail-under=5.0 $(git ls-files './*.py')
