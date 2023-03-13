@@ -19,6 +19,6 @@ jobs:
         pip install pylint
         pip install -r requirements.txt
     - name: Analysing the code with pylint 
-      working-directory: scr
+      working-directory: src
       run: |
         pylint $(git ls-files './*.py')
