@@ -1,6 +1,4 @@
 sympy
 numpy
-qiskit
-matplotlib
-pylatexenc
+qiskit[all]
 git+https://github.com/Mostafa-Atallah2020/vqf.git#egg=vqf
