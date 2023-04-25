@@ -1,4 +1,5 @@
 import numpy as np
+from tabulate import tabulate
 from sympy import (
     Add,
     Mul,
@@ -190,7 +191,6 @@ def create_clause1(m, p, q, z):
     return clauses
 
 
-
 def create_clause2(m, p, q, z):
     """there is another  version  of it called create_clause2 where we have taken all the z.get possible  and then we have let our rule 1 to cut all extra z values"""
     clauses = []
@@ -262,8 +262,6 @@ def rule_21(clause, expression):
     return expression
 
 
-
-
 def rule_31(clause, expression):
     if (
         clause.func == Add
@@ -302,7 +300,6 @@ def rule_11(clause, expression):
     # print (max_sum(clause))
 
     return expression
-
 
 
 def rule_51(clause, known_expressions):
@@ -642,3 +639,11 @@ if __name__ == "__main__":
     expression_overall[Symbol("p5") + Symbol("q5")] = 1
     expression_overall[Symbol("p5") * Symbol("q5")] = 0
     print(expression_overall)
+
+
+def table_form(data):
+    # Convert dictionary to list of lists
+    table = [[key, value] for key, value in data.items()]
+
+    # Print table
+    print(tabulate(table, headers=["Key", "Value"]))
