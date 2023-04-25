@@ -4,3 +4,4 @@ Mostafa and Shamim/test_nb.ipynb
 Mostafa and Ludmilla/test.ipynb
 *.ipynb_checkpoints
 .venv/
+__pycache__/
