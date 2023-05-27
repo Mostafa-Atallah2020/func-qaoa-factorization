@@ -1,6 +1,7 @@
 import rustworkx as rx
 from rustworkx.visualization import mpl_draw
 
+
 class SetsGraph:
     def __init__(self, sets) -> None:
         self.__sets = sets
@@ -17,7 +18,7 @@ class SetsGraph:
         nodes = self.__graph.nodes()
         for i in range(len(nodes)):
             for j in range(len(nodes)):
-                if i != j: 
+                if i != j:
                     if len(nodes[i].intersection(nodes[j])) > 0:
                         self.__graph.add_edge(i, j, nodes[i].intersection(nodes[j]))
                     else:
