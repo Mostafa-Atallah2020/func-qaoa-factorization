@@ -2,4 +2,5 @@ sympy
 numpy
 qiskit[all]
 tabulate
+rustworkx
 git+https://github.com/Mostafa-Atallah2020/vqf.git#egg=vqf
