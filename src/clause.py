@@ -10,7 +10,7 @@ class BitsTable:
     def __init__(self, frame) -> None:
         self.table = frame
         self.bits = set(self.table.columns)
-        #display(self.table)
+        # display(self.table)
 
     def remove_carry_bits(self):
         # Remove columns starting with "z_"
