@@ -1,31 +1,67 @@
-import rustworkx as rx
-from rustworkx.visualization import mpl_draw
+import networkx as nx
+import matplotlib.pyplot as plt
+import itertools
 
 
 class SetsGraph:
     def __init__(self, sets) -> None:
         self.__sets = sets
-        self.__graph = rx.PyGraph()
-        [self.__graph.add_node(s) for s in self.__sets]
+        self.__graph = nx.Graph()
+        self.__add_nodes()
+        self.__add_edges()
+
         self.disjoint_sets = []
         self.__get_disjoint_sets()
-        self.__remove_repeated_data(self.disjoint_sets)
-
-    def draw(self):
-        mpl_draw(self.__graph, with_labels=True, labels=str)
 
     def __get_disjoint_sets(self):
-        nodes = self.__graph.nodes()
-        for i in range(len(nodes)):
-            for j in range(len(nodes)):
-                if i != j:
-                    if len(nodes[i].intersection(nodes[j])) > 0:
-                        self.__graph.add_edge(i, j, nodes[i].intersection(nodes[j]))
-                    else:
-                        self.disjoint_sets.append([nodes[i], nodes[j]])
+        # Generate all possible combinations of nodes
+        all_nodes = set(range(len(self.__sets)))
+        independent_sets = []
+        max_independent_set = []
 
-    def __remove_repeated_data(self, data):
-        for i in data:
-            for j in data:
-                if j[::-1] == i:
-                    data.remove(j)
+        # Brute-force algorithm to find the maximum independent set
+        for r in range(len(self.__sets) + 1):
+            for nodes in itertools.combinations(all_nodes, r):
+                is_independent = True
+                for pair in itertools.combinations(nodes, 2):
+                    set1 = self.__sets[pair[0]]
+                    set2 = self.__sets[pair[1]]
+                    if set1.intersection(set2):
+                        is_independent = False
+                        break
+                if is_independent:
+                    independent_sets.append(nodes)
+                    if len(nodes) > len(max_independent_set):
+                        max_independent_set = nodes
+
+        [self.disjoint_sets.append(self.__sets[node]) for node in max_independent_set]
+
+    def draw(self):
+        # Draw the graph with labeled nodes
+        pos = nx.spring_layout(self.__graph)
+        nx.draw(
+            self.__graph,
+            pos,
+            with_labels=False,
+            node_size=500,
+            node_color="lightblue",
+            font_weight="bold",
+        )
+
+        # Add labels for each node representing its corresponding set
+        labels = nx.get_node_attributes(self.__graph, "set")
+        nx.draw_networkx_labels(self.__graph, pos, labels=labels)
+
+        # Show the graph
+        plt.show()
+
+    def __add_nodes(self):
+        # Add nodes to the graph and label them with their corresponding set
+        for i, s in enumerate(self.__sets):
+            self.__graph.add_node(i, set=s)
+
+    def __add_edges(self):
+        for i in range(len(self.__sets)):
+            for j in range(i + 1, len(self.__sets)):
+                if self.__sets[i].intersection(self.__sets[j]):
+                    self.__graph.add_edge(i, j)
