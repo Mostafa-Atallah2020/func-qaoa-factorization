@@ -40,5 +40,5 @@ class Clause:
             subs_expr = self.__clause.subs(subs_dict)
             if simplify(subs_expr) == 0:
                 reduced_space.append(v)
-        df = pd.DataFrame(reduced_space, columns=variables)
+        df = pd.DataFrame(reduced_space, columns=variables).astype(np.uint8)
         return BitsTable(df)
