@@ -21,8 +21,8 @@ class BitsTable:
 
     def calc_r(self):
         num_rows = len(self.table)
-        num_columns = len(self.table.columns)
-        quantity = np.log2(num_rows / (2**num_columns))
+        num_columns = len(self.bits)
+        quantity = np.log2(num_rows) - num_columns
         return quantity
 
 
