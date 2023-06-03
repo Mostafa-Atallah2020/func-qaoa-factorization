@@ -3,7 +3,7 @@ from itertools import product
 import numpy as np
 import pandas as pd
 from IPython.display import display
-from sympy import simplify
+from sympy import simplify, Add
 
 
 class BitsTable:
@@ -30,6 +30,15 @@ class Clause:
     def __init__(self, clause) -> None:
         self.__clause = clause
         self.bits = self.__clause.free_symbols
+        self.pq_part, self.z_part = self.__split()
+
+    def __split(self):
+        coeff_dict = self.__clause.as_coefficients_dict()
+        z_expr = Add(
+            *[term * z for z, term in coeff_dict.items() if str(z).startswith("z_")]
+        )
+        other_expr = self.__clause - z_expr
+        return other_expr, z_expr
 
     def reduce_space(self):
         variables = list(self.bits)
