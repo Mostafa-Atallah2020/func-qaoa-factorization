@@ -35,17 +35,18 @@ class Clause:
         # Create a list of variables
         variables = expr.free_symbols
         # Generate all possible combinations of 0 and 1 for the variables
-        combinations = itertools.product([0, 1], repeat=len(variables))
+        combinations = itertools.product([Integer(0), Integer(1)], repeat=len(variables))
 
         table = []
         for comb in combinations:
             # Create a dictionary of variables and their corresponding values
-            subs_dict = {var: Integer(val) for var, val in zip(variables, comb)}
+            subs_dict = {var: val for var, val in zip(variables, comb)}
             # Substitute variables in expr and evaluate the expression
             expr_val = expr.subs(subs_dict).evalf()
 
             # Append the combination and corresponding value to the table
-            table.append(list(comb) + [expr_val])
+            table.append(comb + (expr_val,))
+
 
         # Create pandas DataFrames for each table
         df = pd.DataFrame(
