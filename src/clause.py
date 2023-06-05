@@ -1,5 +1,3 @@
-from itertools import product
-
 import numpy as np
 import pandas as pd
 from sympy import Add
@@ -37,7 +35,7 @@ class Clause:
         # Create a list of variables
         variables = expr.free_symbols
         # Generate all possible combinations of 0 and 1 for the variables
-        combinations = list(itertools.product([0, 1], repeat=len(variables)))
+        combinations = itertools.product([0, 1], repeat=len(variables))
 
         table = []
         for comb in combinations:
