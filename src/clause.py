@@ -2,8 +2,8 @@ from itertools import product
 
 import numpy as np
 import pandas as pd
-from IPython.display import display
-from sympy import simplify, Add
+from sympy import Add
+from symengine import sympify, Integer
 import itertools
 
 
@@ -11,7 +11,6 @@ class BitsTable:
     def __init__(self, frame) -> None:
         self.table = frame
         self.bits = set(self.table.columns)
-        # display(self.table)
 
     def remove_carry_bits(self):
         # Remove columns starting with "z_"
@@ -34,6 +33,7 @@ class Clause:
         self.pq_part, self.z_part = self.__split()
 
     def __table_from_expr(self, expr):
+        expr = sympify(expr)
         # Create a list of variables
         variables = expr.free_symbols
         # Generate all possible combinations of 0 and 1 for the variables
@@ -41,8 +41,10 @@ class Clause:
 
         table = []
         for comb in combinations:
-            # Substitute variables in z_expr and evaluate the expression
-            expr_val = expr.subs(zip(variables, comb)).evalf()
+            # Create a dictionary of variables and their corresponding values
+            subs_dict = {var: Integer(val) for var, val in zip(variables, comb)}
+            # Substitute variables in expr and evaluate the expression
+            expr_val = expr.subs(subs_dict).evalf()
 
             # Append the combination and corresponding value to the table
             table.append(list(comb) + [expr_val])

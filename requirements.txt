@@ -4,4 +4,5 @@ qiskit[all]
 tabulate
 rustworkx
 cython
+symengine
 git+https://github.com/Mostafa-Atallah2020/vqf.git#egg=vqf
