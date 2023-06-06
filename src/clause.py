@@ -40,7 +40,7 @@ class Clause:
         table = []
         for comb in combinations:
             # Create a dictionary of variables and their corresponding values
-            subs_dict = {var: val for var, val in zip(variables, comb)}
+            subs_dict = dict(zip(variables, comb))
             # Substitute variables in expr and evaluate the expression
             expr_val = expr.subs(subs_dict).evalf()
 
