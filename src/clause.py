@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sympy import Add
 from symengine import sympify, Integer
+import numpy as np
 import itertools
 
 
@@ -35,7 +36,9 @@ class Clause:
         # Create a list of variables
         variables = expr.free_symbols
         # Generate all possible combinations of 0 and 1 for the variables
-        combinations = itertools.product([Integer(0), Integer(1)], repeat=len(variables))
+        combinations = itertools.product(
+            [Integer(0), Integer(1)], repeat=len(variables)
+        )
 
         table = []
         for comb in combinations:
@@ -46,7 +49,6 @@ class Clause:
 
             # Append the combination and corresponding value to the table
             table.append(comb + (expr_val,))
-
 
         # Create pandas DataFrames for each table
         df = pd.DataFrame(
@@ -68,21 +70,21 @@ class Clause:
         z_table = self.__table_from_expr(z_part)
         pq_table = self.__table_from_expr(pq_part)
 
-        for z_row in z_table.iterrows():
-            z_row_values = z_row[1].values[:-1]  # Exclude the last column ('value')
-            z_row_sum = z_row[1]["value"]
+        z_values = z_table.values[:, :-1]  # Extract values excluding the last column
+        z_sums = z_table["value"].values
 
-            for pq_row in pq_table.iterrows():
-                pq_row_values = pq_row[1].values[:-1]
-                pq_row_sum = pq_row[1]["value"]
+        pq_values = pq_table.values[:, :-1]
+        pq_sums = pq_table["value"].values
 
-                if z_row_sum + pq_row_sum == 0:
-                    combined_row = list(z_row_values) + list(pq_row_values)
-                    combined_table.append(combined_row)
+        zero_sum_indices = np.where(
+            z_sums[:, np.newaxis] + pq_sums == 0
+        )  # Find indices where sum is zero
 
-        # Create pandas DataFrame for the combined table
-        variables_z = list(z_table.columns)[:-1]
-        variables_pq = list(pq_table.columns)[:-1]
-        combined_columns = variables_z + variables_pq
-        combined_df = pd.DataFrame(combined_table, columns=combined_columns)
+        for z_index, pq_index in zip(*zero_sum_indices):
+            combined_row = np.concatenate([z_values[z_index], pq_values[pq_index]])
+            combined_table.append(combined_row)
+
+        combined_columns = list(z_table.columns)[:-1] + list(pq_table.columns)[:-1]
+        combined_array = np.array(combined_table)
+        combined_df = pd.DataFrame(combined_array, columns=combined_columns)
         return BitsTable(combined_df)
