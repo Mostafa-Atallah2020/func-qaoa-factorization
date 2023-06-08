@@ -20,21 +20,27 @@ from src import SpaceEfficientVQF
 
 
 folder = "./data/biprimes/"
-maxpow = 10
+maxpow = 40
 
 df = pd.read_csv(f"{folder}biprimes_maxpow_{maxpow}_number_200.csv")
 
 biprimes = df["m=p*q"].to_list()
-biprimes = biprimes[:3]
 
 runtimes_folder = "./data/runtimes/"
 
 # Define the path to the CSV file
-csv_file = os.path.join(runtimes_folder, "time_taken.csv")
+csv_file = os.path.join(runtimes_folder, f"runtime_for_maxpow_{maxpow}.csv")
+
+# Check if the CSV file exists
+csv_file_exists = os.path.exists(csv_file)
 
 # Open the CSV file in append mode
 with open(csv_file, mode="a", newline="") as file:
     writer = csv.writer(file)
+
+    # Write the header if the file is newly created
+    if not csv_file_exists:
+        writer.writerow(["m", "Number of Bits", "Time Taken"])
 
     # Iterate over the biprimes
     for m in biprimes:
@@ -46,7 +52,7 @@ with open(csv_file, mode="a", newline="") as file:
         superposition_tables = vqf.superposition_tables
         end_time = time.time()
         time_taken = end_time - start_time
-        print(f'Time taken: {time_taken} seconds')
-
+        print(f'Time taken: {round(time_taken/60, 6)} min')
+        print('')
         # Write number of bits and time taken to the CSV file
         writer.writerow([m, number_of_bits, time_taken])
