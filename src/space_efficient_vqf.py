@@ -1,5 +1,6 @@
 from vqf.preprocessing import create_clauses
 from src import Clause, SetsGraph
+from src.clause_utils import get_key_by_value
 
 
 class SpaceEfficientVQF:
@@ -36,12 +37,6 @@ class SpaceEfficientVQF:
 
         return best_table
 
-    def __get_key_by_value(self, dictionary, value):
-        for key, val in dictionary.items():
-            if val == value:
-                return key
-        return None  # Value not found
-
     def __get_disjoint_sets(self):
         pq_bits = list(self.__eff_clauses.values())
         self.graph = SetsGraph(pq_bits)
@@ -51,12 +46,12 @@ class SpaceEfficientVQF:
     def __get_superposition_tables(self):
         superposition_tables = []
         if len(self.__disjoint_sets) == 0:
-            best_clause = self.__get_best_bits_table()
-            superposition_tables.append(best_clause)
+            best_table = self.__get_best_bits_table()
+            superposition_tables.append(best_table)
 
         else:
             for s in self.__disjoint_sets:
-                table = self.__get_key_by_value(self.__eff_clauses, s).table
+                table = get_key_by_value(self.__eff_clauses, s).table
                 superposition_tables.append(table)
 
         return superposition_tables

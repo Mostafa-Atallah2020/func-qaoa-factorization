@@ -647,3 +647,10 @@ def table_form(data):
 
     # Print table
     print(tabulate(table, headers=["Key", "Value"]))
+
+
+def get_key_by_value(dictionary, value):
+        for key, val in dictionary.items():
+            if val == value:
+                return key
+        return None  # Value not found
