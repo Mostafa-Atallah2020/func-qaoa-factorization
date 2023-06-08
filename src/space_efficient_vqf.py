@@ -46,8 +46,7 @@ class SpaceEfficientVQF:
     def __get_superposition_tables(self):
         superposition_tables = []
         if len(self.__disjoint_sets) == 0:
-            best_table = self.__get_best_bits_table()
-            superposition_tables.append(best_table)
+            superposition_tables.append(self.best_superposition_table)
 
         else:
             for s in self.__disjoint_sets:
