@@ -40,7 +40,8 @@ for m in biprimes:
     superposition_tables = vqf.superposition_tables
     end_time = time.time()
     time_taken = end_time - start_time
-    print(f'Time taken: {round(time_taken/60, 6)} min')
+    time_taken = round(time_taken/60, 6)
+    print(f'Time taken: {time_taken} min')
     print('')
     # Write number of bits and time taken to the CSV file
     data = {
