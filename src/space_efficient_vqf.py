@@ -10,7 +10,7 @@ class SpaceEfficientVQF:
         )
 
         self.__eff_clauses = self.__get_space_eff_clauses()
-        self.best_superposition_table = self.__get_best_bits_table()
+        self.best_superposition_table = next(self.__get_best_bits_table())
         self.__disjoint_sets = self.__get_disjoint_sets()
         self.superposition_tables = self.__get_superposition_tables()
 
@@ -27,14 +27,13 @@ class SpaceEfficientVQF:
     def __get_best_bits_table(self):
         min_r = float("inf")  # Initialize min_r to infinity
         best_table = None  # Initialize best_table to None
-        tables = self.__eff_clauses.keys()
 
-        for t in tables:
-            r = t.calc_r()
+        for table in self.__eff_clauses:
+            r = table.calc_r()
             if r < min_r:
                 min_r = r
-                best_table = t.table
-
+                best_table = table.table
+                yield best_table  # Use generator to yield the best table instead of storing in memory
         return best_table
 
     def __get_disjoint_sets(self):
@@ -47,10 +46,8 @@ class SpaceEfficientVQF:
         superposition_tables = []
         if len(self.__disjoint_sets) == 0:
             superposition_tables.append(self.best_superposition_table)
-
         else:
             for s in self.__disjoint_sets:
                 table = get_key_by_value(self.__eff_clauses, s).table
                 superposition_tables.append(table)
-
         return superposition_tables
