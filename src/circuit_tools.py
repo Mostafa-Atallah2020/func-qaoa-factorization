@@ -100,7 +100,6 @@ def quantum_adder(a, b):
     return qc
 
 
-
 def measure_adder(qc, n):
     qc.measure(range(2 * n)[n:], range(n))
     sim = Aer.get_backend("aer_simulator")  # Tell Qiskit how to simulate our circuit
@@ -109,7 +108,6 @@ def measure_adder(qc, n):
     result = sim.run(qobj).result()
     counts = result.get_counts()
     return list(counts)
-
 
 
 def quantum_multiplier(a, b):
