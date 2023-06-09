@@ -66,9 +66,8 @@ class Clause:
 
     def reduce_space(self):
         combined_table = []
-        z_part, pq_part = self.__split()
-        z_table = self.__table_from_expr(z_part)
-        pq_table = self.__table_from_expr(pq_part)
+        z_table = self.__table_from_expr(self.z_part)
+        pq_table = self.__table_from_expr(self.pq_part)
 
         z_values = z_table.values[:, :-1]  # Extract values excluding the last column
         z_sums = z_table["value"].values
