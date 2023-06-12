@@ -18,10 +18,14 @@ class SpaceEfficientVQF:
         for c in self.simplified_clauses:
             if c != 0:
                 c = Clause(c)
-                table = c.reduce_space().remove_carry_bits()
-                bits = table.bits
-                yield table, bits
-            del c
+                pq_limit = len(c.pq_part.free_symbols)
+                if pq_limit <= 16:
+                    table = c.reduce_space().remove_carry_bits()
+                    bits = table.bits
+                    yield table, bits
+                else:
+                    del c
+                    continue
         
 
     def __get_best_bits_table(self):
