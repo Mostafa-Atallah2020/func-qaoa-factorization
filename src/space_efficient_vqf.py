@@ -9,20 +9,20 @@ class SpaceEfficientVQF:
             biprime, apply_preprocessing=True, verbose=False
         )
 
-        self.__eff_clauses = self.__get_space_eff_clauses()
+        self.__eff_clauses = dict(self.__get_space_eff_clauses())
         self.best_superposition_table = next(self.__get_best_bits_table())
         self.__disjoint_sets = self.__get_disjoint_sets()
         self.superposition_tables = self.__get_superposition_tables()
 
     def __get_space_eff_clauses(self):
-        eff_clauses = {}
         for c in self.simplified_clauses:
             if c != 0:
                 c = Clause(c)
                 table = c.reduce_space().remove_carry_bits()
                 bits = table.bits
-                eff_clauses[table] = bits
-        return eff_clauses
+                yield table, bits
+            del c
+        
 
     def __get_best_bits_table(self):
         min_r = float("inf")  # Initialize min_r to infinity
