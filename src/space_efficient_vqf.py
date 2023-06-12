@@ -6,7 +6,7 @@ from src.clause_utils import get_key_by_value
 class SpaceEfficientVQF:
     def __init__(self, biprime: int):
         self.p_bits, self.q_bits, self.z_bits, self.simplified_clauses = create_clauses(
-            biprime, apply_preprocessing=True, verbose=False
+            biprime, apply_preprocessing=True, verbose=True
         )
 
         self.selected_clauses = []
