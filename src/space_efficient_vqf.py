@@ -9,6 +9,7 @@ class SpaceEfficientVQF:
             biprime, apply_preprocessing=True, verbose=False
         )
 
+        self.selected_clauses = []
         self.__eff_clauses = dict(self.__get_space_eff_clauses())
         self.best_superposition_table = next(self.__get_best_bits_table())
         self.__disjoint_sets = self.__get_disjoint_sets()
@@ -22,6 +23,7 @@ class SpaceEfficientVQF:
                 if pq_limit <= 16:
                     table = c.reduce_space().remove_carry_bits()
                     bits = table.bits
+                    self.selected_clauses.append(c)
                     yield table, bits
                 else:
                     del c
