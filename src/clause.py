@@ -85,5 +85,7 @@ class Clause:
 
         combined_columns = list(z_table.columns)[:-1] + list(pq_table.columns)[:-1]
         combined_array = np.array(combined_table)
-        combined_df = pd.DataFrame(combined_array, columns=combined_columns).astype(np.uint8)
+        combined_df = pd.DataFrame(combined_array, columns=combined_columns).astype(
+            np.uint8
+        )
         return BitsTable(combined_df)
