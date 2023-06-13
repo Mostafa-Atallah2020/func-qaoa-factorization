@@ -18,9 +18,15 @@ class SpaceEfficientVQF:
         `biprime` (`int`): The biprime value used to generate the clauses.
         """
         # Generate the simplified clauses and reduce their space requirements
-        self.p_bits, self.q_bits, self.z_bits, self.simplified_clauses = create_clauses(
-            biprime, apply_preprocessing=True, verbose=True
+        self.p_bits, self.q_bits, self.z_bits, self.clauses = create_clauses(
+            biprime, apply_preprocessing=False, verbose=False
         )
+        (
+            self.p_bits_simple,
+            self.q_bits_simple,
+            self.z_bits_simple,
+            self.simplified_clauses,
+        ) = create_clauses(biprime, apply_preprocessing=True, verbose=False)
         self.selected_clauses = []
         self.__eff_clauses = dict(self.__get_space_eff_clauses())
 
