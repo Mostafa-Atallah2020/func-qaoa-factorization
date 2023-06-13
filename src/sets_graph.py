@@ -4,14 +4,15 @@ import itertools
 
 
 class SetsGraph:
-    def __init__(self, sets) -> None:
+    def __init__(self, sets_r_values) -> None:
         """
         Initializes a SetsGraph object.
 
         Args:
             sets (list): A list of sets to be represented as nodes in the graph.
         """
-        self.__sets = sets
+        self.__sets = list(sets_r_values.values())
+        self.__r_vals = list(sets_r_values.keys())
         self.__graph = nx.Graph()
         self.__add_nodes()
         self.__add_edges()
@@ -21,7 +22,7 @@ class SetsGraph:
 
     def __get_disjoint_sets(self):
         """
-        Finds the maximum independent set of nodes in the graph.
+        Finds the maximum independent set of nodes in the graph while minimizing the r_vals.
 
         Returns:
             list: A list of sets representing the maximum independent set of nodes.
@@ -30,21 +31,29 @@ class SetsGraph:
         all_nodes = set(range(len(self.__sets)))
         independent_sets = []
         max_independent_set = []
+        min_r_vals = float("inf")
 
-        # Brute-force algorithm to find the maximum independent set
+        # Brute-force algorithm to find the maximum independent set with minimized r_vals
         for r in range(len(self.__sets) + 1):
             for nodes in itertools.combinations(all_nodes, r):
                 is_independent = True
+                r_vals = []
                 for pair in itertools.combinations(nodes, 2):
                     set1 = self.__sets[pair[0]]
                     set2 = self.__sets[pair[1]]
                     if set1.intersection(set2):
                         is_independent = False
                         break
+                    r_vals.append(self.__r_vals[pair[0]])
+
                 if is_independent:
                     independent_sets.append(nodes)
-                    if len(nodes) > len(max_independent_set):
+                    if len(nodes) > len(max_independent_set) or (
+                        len(nodes) == len(max_independent_set)
+                        and sum(r_vals) < min_r_vals
+                    ):
                         max_independent_set = nodes
+                        min_r_vals = sum(r_vals)
 
         [self.disjoint_sets.append(self.__sets[node]) for node in max_independent_set]
 

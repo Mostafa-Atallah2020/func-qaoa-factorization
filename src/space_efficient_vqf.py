@@ -29,7 +29,7 @@ class SpaceEfficientVQF:
         ) = create_clauses(biprime, apply_preprocessing=True, verbose=False)
         self.selected_clauses = []
         self.__eff_clauses = dict(self.__get_space_eff_clauses())
-
+        self.__r_values = dict(self.__get_r_values())
         # Calculate the best superposition table based on the selected clauses
         self.best_superposition_table = self.__get_best_superposition_table()
 
@@ -38,6 +38,11 @@ class SpaceEfficientVQF:
 
         # Calculate the superposition tables based on the disjoint sets
         self.superposition_tables = self.__get_superposition_tables()
+
+    def __get_r_values(self):
+        for table, bits in self.__eff_clauses.items():
+            r = table.calc_r()
+            yield r, bits
 
     def __get_space_eff_clauses(self):
         """
@@ -89,8 +94,7 @@ class SpaceEfficientVQF:
 
         `list`: The disjoint sets of pq-bits.
         """
-        pq_bits = list(self.__eff_clauses.values())
-        self.graph = SetsGraph(pq_bits)
+        self.graph = SetsGraph(self.__r_values)
         disjoint_sets = self.graph.disjoint_sets
         return disjoint_sets
 

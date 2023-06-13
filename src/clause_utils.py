@@ -5,12 +5,6 @@ from sympy import (
     Mul,
     Number,
     Symbol,
-    expand,
-    factor,
-    simplify,
-    sqrt,
-    srepr,
-    symbols,
     sympify,
 )
 
@@ -654,6 +648,7 @@ def get_key_by_value(dictionary, value):
         if val == value:
             return key
     return None  # Value not found
+
 
 def create_merged_dict(dict1, dict2):
     """
