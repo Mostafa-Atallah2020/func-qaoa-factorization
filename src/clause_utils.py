@@ -654,3 +654,36 @@ def get_key_by_value(dictionary, value):
         if val == value:
             return key
     return None  # Value not found
+
+def create_merged_dict(dict1, dict2):
+    """
+    Create a new dictionary by merging values from two dictionaries.
+
+    The function takes two dictionaries as input and returns a new dictionary
+    where the keys are the values from the first dictionary and the values are
+    the corresponding values from the second dictionary.
+
+    Args:
+    -----
+
+        `dict1` (`dict`): The first dictionary.
+        `dict2` (`dict`): The second dictionary.
+
+    Returns:
+    --------
+
+        `dict`: A new dictionary with merged values.
+
+    Examples:
+    ---------
+
+        >>> dict1 = {'apple': 'fruit', 'carrot': 'vegetable', 'banana': 'fruit'}
+        >>> dict2 = {'fruit': 'red', 'vegetable': 'orange'}
+        >>> merged_dict = create_merged_dictionary(dict1, dict2)
+        >>> merged_dict
+        {'fruit': 'red', 'vegetable': 'orange'}
+    """
+    merged_dict = {}
+    for key, value in dict1.items():
+        merged_dict[value] = dict2[key]
+    return merged_dict
