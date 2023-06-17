@@ -37,14 +37,17 @@ class SetsGraph:
         for r in range(len(self.__sets) + 1):
             for nodes in itertools.combinations(all_nodes, r):
                 is_independent = True
+
                 r_vals = []
+                for el in nodes:
+                    r_vals.append(self.__r_vals[el])
+
                 for pair in itertools.combinations(nodes, 2):
                     set1 = self.__sets[pair[0]]
                     set2 = self.__sets[pair[1]]
                     if set1.intersection(set2):
                         is_independent = False
                         break
-                    r_vals.append(self.__r_vals[pair[0]])
 
                 if is_independent:
                     independent_sets.append(nodes)
