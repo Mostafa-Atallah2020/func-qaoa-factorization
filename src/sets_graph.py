@@ -48,10 +48,7 @@ class SetsGraph:
 
                 if is_independent:
                     independent_sets.append(nodes)
-                    if len(nodes) > len(max_independent_set) or (
-                        len(nodes) == len(max_independent_set)
-                        and sum(r_vals) < min_r_vals
-                    ):
+                    if sum(r_vals) < min_r_vals:
                         max_independent_set = nodes
                         min_r_vals = sum(r_vals)
 
