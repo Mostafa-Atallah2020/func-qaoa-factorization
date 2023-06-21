@@ -1,5 +1,5 @@
 from vqf.preprocessing import create_clauses
-from src import Clause, SetsGraph 
+from src import Clause, SetsGraph
 from src.clause_utils import (
     get_key_by_value,
     create_merged_dict,

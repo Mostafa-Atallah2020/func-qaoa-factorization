@@ -9,6 +9,28 @@ from sympy import (
     sympify,
 )
 
+import matplotlib.pyplot as plt
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table
+
+
+def display_dataframe_as_image(df, output_filename):
+    fig, ax = plt.figure(figsize=(8, 6)).subplots()
+    ax.axis("off")
+    table = Table(
+        cellText=df.values.tolist(), colLabels=df.columns.tolist(), loc="center"
+    )
+    ax.add_table(table)
+    plt.savefig(output_filename, bbox_inches="tight")
+
+
+def save_dataframe_as_pdf(df, output_filename):
+    data = [df.columns.to_list()] + df.values.tolist()
+    doc = SimpleDocTemplate(output_filename, pagesize=letter)
+    table = Table(data)
+    elements = [table]
+    doc.build(elements)
+
 
 def convert_to_dataframe(data, columns=["Key", "Value"]):
     """
