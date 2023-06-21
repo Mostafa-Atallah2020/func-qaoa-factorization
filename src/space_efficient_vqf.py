@@ -1,6 +1,12 @@
 from vqf.preprocessing import create_clauses
-from src import Clause, SetsGraph
-from src.clause_utils import get_key_by_value
+from src import Clause, SetsGraph 
+from src.clause_utils import (
+    get_key_by_value,
+    create_merged_dict,
+    merge_dictionaries,
+    find_non_matching_values,
+    convert_to_dataframe,
+)
 
 
 class SpaceEfficientVQF:
@@ -27,6 +33,8 @@ class SpaceEfficientVQF:
             self.z_bits_simple,
             self.simplified_clauses,
         ) = create_clauses(biprime, apply_preprocessing=True, verbose=False)
+
+        self.known_bits = self.__get_known_bits()
         self.selected_clauses = []
         self.__eff_clauses = dict(self.__get_space_eff_clauses())
         self.__r_values = dict(self.__get_r_values())
@@ -38,6 +46,17 @@ class SpaceEfficientVQF:
 
         # Calculate the superposition tables based on the disjoint sets
         self.superposition_tables = self.__get_superposition_tables()
+
+    def __get_known_bits(self):
+        p_bits = create_merged_dict(self.p_bits, self.p_bits_simple)
+        q_bits = create_merged_dict(self.q_bits, self.q_bits_simple)
+
+        known_p_bits = find_non_matching_values(p_bits)
+        known_q_bits = find_non_matching_values(q_bits)
+
+        known_bits = merge_dictionaries(known_p_bits, known_q_bits)
+        known_bits = convert_to_dataframe(known_bits, columns=["bit", "value"])
+        return known_bits
 
     def __get_r_values(self):
         for table, bits in self.__eff_clauses.items():
