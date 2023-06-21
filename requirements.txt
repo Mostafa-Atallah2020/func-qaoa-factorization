@@ -5,4 +5,5 @@ tabulate
 rustworkx
 cython
 symengine
+reportlab
 git+https://github.com/Mostafa-Atallah2020/vqf.git#egg=vqf
