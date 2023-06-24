@@ -55,7 +55,7 @@ class SpaceEfficientVQF:
         known_q_bits = find_non_matching_values(q_bits)
 
         known_bits = merge_dictionaries(known_p_bits, known_q_bits)
-        known_bits = convert_to_dataframe(known_bits, columns=["bit", "value"])
+        known_bits = convert_to_dataframe(known_bits, columns=["Known Bit", "Value"])
         return known_bits
 
     def __get_r_values(self):

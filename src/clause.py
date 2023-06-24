@@ -51,9 +51,7 @@ class Clause:
             table.append(comb + (expr_val,))
 
         # Create pandas DataFrames for each table
-        df = pd.DataFrame(
-            table, columns=[str(variable) for variable in variables] + ["value"]
-        )
+        df = pd.DataFrame(table, columns=list(variables) + ["value"])
         return df
 
     def __split(self):
