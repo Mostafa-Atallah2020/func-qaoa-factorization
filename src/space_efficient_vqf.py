@@ -6,6 +6,7 @@ from src.clause_utils import (
     merge_dictionaries,
     find_non_matching_values,
     convert_to_dataframe,
+    convert_elements_to_str
 )
 
 
@@ -45,7 +46,8 @@ class SpaceEfficientVQF:
         self.__disjoint_sets = self.__get_disjoint_sets()
 
         # Calculate the superposition tables based on the disjoint sets
-        self.superposition_tables = self.__get_superposition_tables()
+        self.__superposition_tables = self.__get_superposition_tables()
+        self.table_clause_dict = dict(self.__get_table_clause_dict())
 
     def __get_known_bits(self):
         p_bits = create_merged_dict(self.p_bits, self.p_bits_simple)
@@ -57,6 +59,14 @@ class SpaceEfficientVQF:
         known_bits = merge_dictionaries(known_p_bits, known_q_bits)
         known_bits = convert_to_dataframe(known_bits, columns=["Known Bit", "Value"])
         return known_bits
+
+    def __get_table_clause_dict(self):
+        for table in self.__superposition_tables:
+            for c in self.selected_clauses:
+                set1 = convert_elements_to_str(c.pq_part.free_symbols)
+                set2 = convert_elements_to_str(set(table.columns))
+                if set1 == set2:
+                    yield c.clause, table
 
     def __get_r_values(self):
         for table, bits in self.__eff_clauses.items():
