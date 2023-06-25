@@ -1,5 +1,5 @@
 from vqf.preprocessing import create_clauses
-from src import Clause, SetsGraph
+from src import Clause, SetsGraph, BitsTable
 from src.clause_utils import (
     get_key_by_value,
     create_merged_dict,
@@ -66,7 +66,7 @@ class SpaceEfficientVQF:
                 set1 = convert_elements_to_str(c.pq_part.free_symbols)
                 set2 = convert_elements_to_str(set(table.columns))
                 if set1 == set2:
-                    yield c.clause, table
+                    yield c, BitsTable(table)
 
     def __get_r_values(self):
         for table, bits in self.__eff_clauses.items():
