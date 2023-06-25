@@ -2,6 +2,7 @@ import sys
 import os
 import time
 import pandas as pd
+import numpy as np
 
 
 # Get the absolute path of the current script
@@ -19,11 +20,12 @@ from src import SpaceEfficientVQF
 
 
 folder = "./data/biprimes/"
-maxpow = 40
+maxpow = 60
 
 df = pd.read_csv(f"{folder}biprimes_maxpow_{maxpow}_number_200.csv")
 
 biprimes = df["m=p*q"].to_list()
+biprimes = biprimes[:5]
 
 runtimes_folder = "./data/runtimes/"
 
@@ -32,22 +34,31 @@ csv_file = os.path.join(runtimes_folder, f"runtime_for_maxpow_{maxpow}.csv")
 
 # Iterate over the biprimes
 for m in biprimes:
-    print(f'Considering biprime: {m}')
+    print(f"\t\tConsidering biprime: {m}")
+    print('')
     # Measure the time taken for executing superposition_tables
     start_time = time.time()
-    number_of_bits = len(bin(m)[2:])
+
     vqf = SpaceEfficientVQF(m)
-    superposition_tables = vqf.superposition_tables
+    known_bits = vqf.known_bits
+    print(known_bits)
+    print('')
+    for index, (c, table) in enumerate(vqf.table_clause_dict.items()):
+        print(f"Superposition Table: {index+1}")
+        print("------------------------")
+        print(f"Clause: {c.clause}")
+        n_vars = len(table.bits)
+        n_rows = len(table.table)
+        r_val = table.calc_r()
+
+        print(f"Number of Variables: {n_vars}")
+        print(f"Number of Rows: {n_rows} (log: {np.round(np.log2(n_rows), 5)})")
+        print(f"R Value: {np.round(r_val, 5)}")
+        print("================================================================")
+    
     end_time = time.time()
     time_taken = end_time - start_time
-    time_taken = round(time_taken/60, 6)
-    print(f'Time taken: {time_taken} min')
-    print('')
-    # Write number of bits and time taken to the CSV file
-    data = {
-        "m": [m],
-        "Number of Bits": [number_of_bits],
-        "Time Taken": [time_taken]
-    }
-    df = pd.DataFrame(data)
-    df.to_csv(csv_file, mode="a", header=not os.path.exists(csv_file), index=False)
+    time_taken = round(time_taken / 60, 6)
+    print(f"Time taken: {time_taken} min")
+    print("")
+
