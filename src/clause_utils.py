@@ -13,13 +13,15 @@ import matplotlib.pyplot as plt
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table
 
+
 def convert_elements_to_str(input_set):
     output_set = set()
-    
+
     for element in input_set:
         output_set.add(str(element))
-    
+
     return output_set
+
 
 def display_dataframe_as_image(df, output_filename):
     fig, ax = plt.figure(figsize=(8, 6)).subplots()

@@ -6,7 +6,7 @@ from src.clause_utils import (
     merge_dictionaries,
     find_non_matching_values,
     convert_to_dataframe,
-    convert_elements_to_str
+    convert_elements_to_str,
 )
 
 
