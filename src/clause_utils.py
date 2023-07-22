@@ -14,6 +14,23 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table
 
 
+def get_table_bin_combinations(table):
+    # Create a copy of the input table
+    new_table = table.copy()
+
+    def concat_binary_values(row):
+        # Convert the binary values to strings and concatenate them
+        return "".join(str(val) for val in row)
+
+    # Create a new column 'concatenated_binary' in the new table to store the results
+    new_table["concatenated_binary"] = new_table.apply(concat_binary_values, axis=1)
+
+    # Convert the 'concatenated_binary' column to a list
+    binary_list = new_table["concatenated_binary"].tolist()
+
+    return binary_list
+
+
 def get_all_bin_combinations(n):
     def backtrack(curr_combination, index):
         if index == n:

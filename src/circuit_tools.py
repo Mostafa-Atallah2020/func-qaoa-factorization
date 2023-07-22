@@ -61,7 +61,6 @@ def adder_block(number_of_qubits, multiplier):
 
 
 def process_numbers(a, b):
-
     if len(a) > len(b):
         b = "0" * (len(a) - len(b)) + b
     elif len(b) > len(a):
