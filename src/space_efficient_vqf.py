@@ -64,9 +64,9 @@ class SpaceEfficientVQF:
         for table in self.superposition_tables:
             for c in self.selected_clauses:
                 set1 = convert_elements_to_str(c.pq_part.free_symbols)
-                set2 = convert_elements_to_str(set(table.columns))
+                set2 = convert_elements_to_str(set(table.table.columns))
                 if set1 == set2:
-                    yield c, BitsTable(table)
+                    yield c, table
 
     def __get_r_values(self):
         for table, bits in self.__eff_clauses.items():
@@ -141,6 +141,6 @@ class SpaceEfficientVQF:
             superposition_tables.append(self.best_superposition_table)
         else:
             for s in self.__disjoint_sets:
-                table = get_key_by_value(self.__eff_clauses, s).table
+                table = get_key_by_value(self.__eff_clauses, s)
                 superposition_tables.append(table)
         return superposition_tables
