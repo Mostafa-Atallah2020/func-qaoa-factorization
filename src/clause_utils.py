@@ -14,6 +14,32 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table
 
 
+def get_all_bin_combinations(n):
+    def backtrack(curr_combination, index):
+        if index == n:
+            # When we reach the end of the string, add the combination to the list
+            binary_combinations.append("".join(curr_combination))
+            return
+
+        # Try both choices (0 and 1) at the current index and recurse
+        curr_combination[index] = "0"
+        backtrack(curr_combination, index + 1)
+
+        curr_combination[index] = "1"
+        backtrack(curr_combination, index + 1)
+
+    # Initialize the list to store combinations
+    binary_combinations = []
+
+    # Initialize the combination with n zeros
+    initial_combination = ["0"] * n
+
+    # Start the recursion from index 0
+    backtrack(initial_combination, 0)
+
+    return binary_combinations
+
+
 def convert_elements_to_str(input_set):
     output_set = set()
 
@@ -241,10 +267,8 @@ def max_sum(clause):
                     max = max + 0
 
                 if isinstance(t.args[0], Number) and t.args[0] < 0:
-
                     pass
             if t.func == Symbol:
-
                 max = max + 1
 
             # if isinstance(t ,Symbol):
@@ -469,7 +493,6 @@ def rule_11(clause, expression):
 
 
 def rule_51(clause, known_expressions):
-
     if clause.func == Add and len(clause.args) == 2:
         if len(clause.args[0].free_symbols) == 0:
             constant_a = clause.args[0]
@@ -478,7 +501,6 @@ def rule_51(clause, known_expressions):
                 symbol = clause.args[1] / constant_b
                 if isinstance(constant_a, Number) and isinstance(constant_b, Number):
                     if constant_a > 0 or constant_b < 0:
-
                         known_expressions[symbol] = 1
     return known_expressions
 
@@ -537,10 +559,8 @@ def rule_71(clause, expression):
                 print(type(count))
             if t.func == Mul:
                 if isinstance(t.args[0], Number) and t.args[0] < 0:
-
                     negative.append(-t.args[0])
                 else:
-
                     count = count + 1
 
         print(negative)
@@ -569,7 +589,6 @@ def rule_81(clause, expression):
 
     if len(negative) == 0:
         for t in clause.args:
-
             expression[t] = 0
 
     return expression
@@ -586,7 +605,6 @@ def rule_sum_equal(clause, expression):
     l = []
 
     if len(negative) > 0:
-
         for t in negative:
             if -t.args[0] == max_sum(clause):
                 var = t / t.args[0]
@@ -644,7 +662,6 @@ def rule77(clause, expression):
 
 
 if __name__ == "__main__":
-
     m, p, q, z = create_dictionary_robust(291311)
     p2 = create_clause2(m, p, q, z)
     p2
@@ -652,7 +669,6 @@ if __name__ == "__main__":
     expression_1 = {}
     renew_clause_1 = []
     for clauses in p2:
-
         rule_81(clauses, expression_1)
 
     for clauses in p2:
@@ -662,7 +678,6 @@ if __name__ == "__main__":
     expression_2 = {}
     renew_clause_2 = []
     for clauses in renew_clause_1:
-
         rule_81(clauses, expression_2)
 
     for clauses in renew_clause_1:
@@ -672,7 +687,6 @@ if __name__ == "__main__":
     expression_3 = {}
     renew_clause_3 = []
     for clauses in renew_clause_2:
-
         rule_81(clauses, expression_3)
 
     for clauses in renew_clause_2:
@@ -682,7 +696,6 @@ if __name__ == "__main__":
     expression_4 = {}
     renew_clause_4 = []
     for clauses in renew_clause_3:
-
         rule_81(clauses, expression_4)
 
     for clauses in renew_clause_3:
@@ -692,7 +705,6 @@ if __name__ == "__main__":
     expression_5 = {}
     renew_clause_5 = []
     for clauses in renew_clause_4:
-
         rule_11(clauses, expression_5)
 
     for clauses in renew_clause_4:
@@ -702,7 +714,6 @@ if __name__ == "__main__":
     expression_6 = {}
     renew_clause_6 = []
     for clauses in renew_clause_5:
-
         rule_11(clauses, expression_6)
 
     for clauses in renew_clause_5:
@@ -713,7 +724,6 @@ if __name__ == "__main__":
     expression_7 = {}
     renew_clause_7 = []
     for clauses in renew_clause_6:
-
         rule_21(clauses, expression_7)
         rule_21(clauses, expression_overall)
     print(expression_overall)
@@ -725,7 +735,6 @@ if __name__ == "__main__":
     expression_8 = {}
     renew_clause_8 = []
     for clauses in renew_clause_7:
-
         rule_11(clauses, expression_8)
 
     for clauses in renew_clause_7:
@@ -735,7 +744,6 @@ if __name__ == "__main__":
     expression_9 = {}
     renew_clause_9 = []
     for clauses in renew_clause_8:
-
         rule_21(clauses, expression_9)
         rule_21(clauses, expression_overall)
     print(expression_overall)
@@ -747,7 +755,6 @@ if __name__ == "__main__":
     expression_9 = {}
     renew_clause_91 = []
     for clauses in renew_clause_8:
-
         rule_21(clauses, expression_9)
         rule_21(clauses, expression_overall)
     print(expression_overall)
@@ -767,7 +774,6 @@ if __name__ == "__main__":
         expression_10, p = rule_sum_equal(clauses, expression_10)
 
         if len(expression_10) != 0:
-
             for clauses in renew_clause_91:
                 renew_clause_10.append(clauses.subs(expression_10).expand())
                 for clauses in renew_clause_10:
@@ -782,7 +788,6 @@ if __name__ == "__main__":
     expression_12 = {}
     renew_clause_12 = []
     for clauses in renew_clause_big:
-
         rule77(clauses, expression_12)
 
     for clauses in renew_clause_big:
@@ -792,7 +797,6 @@ if __name__ == "__main__":
     expression_13 = {}
     renew_clause_13 = []
     for clauses in renew_clause_12:
-
         rule_11(clauses, expression_12)
 
     for clauses in renew_clause_12:
