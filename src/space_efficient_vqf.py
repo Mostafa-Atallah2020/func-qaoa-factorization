@@ -46,7 +46,7 @@ class SpaceEfficientVQF:
         self.__disjoint_sets = self.__get_disjoint_sets()
 
         # Calculate the superposition tables based on the disjoint sets
-        self.__superposition_tables = self.__get_superposition_tables()
+        self.superposition_tables = self.__get_superposition_tables()
         self.table_clause_dict = dict(self.__get_table_clause_dict())
 
     def __get_known_bits(self):
@@ -61,7 +61,7 @@ class SpaceEfficientVQF:
         return known_bits
 
     def __get_table_clause_dict(self):
-        for table in self.__superposition_tables:
+        for table in self.superposition_tables:
             for c in self.selected_clauses:
                 set1 = convert_elements_to_str(c.pq_part.free_symbols)
                 set2 = convert_elements_to_str(set(table.columns))
