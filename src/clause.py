@@ -1,15 +1,31 @@
+import itertools
+
 import numpy as np
 import pandas as pd
+from qiskit.quantum_info import Statevector
+from symengine import Integer, sympify
 from sympy import Add
-from symengine import sympify, Integer
-import numpy as np
-import itertools
+
+from src.clause_utils import get_table_bin_combinations
 
 
 class BitsTable:
     def __init__(self, frame) -> None:
         self.table = frame
         self.bits = set(self.table.columns)
+        self.initialization_state = self.__get_initialization_state()
+
+    def __get_initialization_state(self):
+        table_combs = get_table_bin_combinations(self.table)
+        n_amps = len(table_combs)
+        amp = 1 / (n_amps**0.5)
+        desired_state = sum(
+            [
+                amp * Statevector.from_label(table_combs[i]).data
+                for i in range(len(table_combs))
+            ]
+        )
+        return desired_state
 
     def remove_carry_bits(self):
         # Remove columns starting with "z_"

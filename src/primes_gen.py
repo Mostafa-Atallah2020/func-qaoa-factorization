@@ -1,9 +1,9 @@
 import math
 import random
+import sys
 import time
 
 import numpy as np
-import sys
 
 sys.path.append(f"./../")
 

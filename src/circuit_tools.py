@@ -1,14 +1,7 @@
 from numpy import pi
-
 # importing Qiskit
-from qiskit import (
-    Aer,
-    ClassicalRegister,
-    QuantumCircuit,
-    QuantumRegister,
-    assemble,
-    transpile,
-)
+from qiskit import (Aer, ClassicalRegister, QuantumCircuit, QuantumRegister,
+                    assemble, transpile)
 
 
 def swap_circuit(quantum_circuit, qubit_array):

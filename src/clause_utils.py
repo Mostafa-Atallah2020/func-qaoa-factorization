@@ -1,17 +1,10 @@
-import numpy as np
-from tabulate import tabulate
-import pandas as pd
-from sympy import (
-    Add,
-    Mul,
-    Number,
-    Symbol,
-    sympify,
-)
-
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table
+from sympy import Add, Mul, Number, Symbol, sympify
+from tabulate import tabulate
 
 
 def get_table_bin_combinations(table):
