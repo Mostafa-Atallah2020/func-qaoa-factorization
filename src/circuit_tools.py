@@ -4,6 +4,17 @@ from qiskit import (Aer, ClassicalRegister, QuantumCircuit, QuantumRegister,
                     assemble, transpile)
 
 
+def counts(qc):
+    qc.measure_all()
+    # Simulate the circuit to get the counts
+    simulator = Aer.get_backend("qasm_simulator")
+    tqc = transpile(qc, simulator)
+    qobj = assemble(tqc)
+    result = simulator.run(qobj).result()
+    # Get the measurement counts
+    return result.get_counts()
+
+
 def statevector(qc):
     simulator = Aer.get_backend("statevector_simulator")
     result = simulator.run(transpile(qc, simulator)).result()
