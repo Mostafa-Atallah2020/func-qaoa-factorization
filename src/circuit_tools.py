@@ -4,6 +4,12 @@ from qiskit import (Aer, ClassicalRegister, QuantumCircuit, QuantumRegister,
                     assemble, transpile)
 
 
+def statevector(qc):
+    simulator = Aer.get_backend("statevector_simulator")
+    result = simulator.run(transpile(qc, simulator)).result()
+    return result.get_statevector()
+
+
 def swap_circuit(quantum_circuit, qubit_array):
     nqubits = len(qubit_array)
     for i in range(int(len(qubit_array) / 2)):
