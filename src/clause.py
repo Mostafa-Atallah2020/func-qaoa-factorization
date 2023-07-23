@@ -13,9 +13,8 @@ class BitsTable:
     def __init__(self, frame) -> None:
         self.table = frame
         self.bits = set(self.table.columns)
-        self.initialization_state = self.__get_initialization_state()
 
-    def __get_initialization_state(self):
+    def get_init_state(self):
         table_combs = get_table_bin_combinations(self.table)
         n_amps = len(table_combs)
         amp = 1 / (n_amps**0.5)
