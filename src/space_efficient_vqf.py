@@ -107,7 +107,7 @@ class SpaceEfficientVQF:
             r = table.calc_r()
             if r < min_r:
                 min_r = r
-                best_table = table.table
+                best_table = table
         return best_table
 
     def __get_disjoint_sets(self):
