@@ -1,9 +1,10 @@
-import sys
-import os
-import time
-import pandas as pd
-import numpy as np
 import csv
+import os
+import sys
+import time
+
+import numpy as np
+import pandas as pd
 from tqdm import tqdm
 
 # Get the absolute path of the current script
@@ -39,14 +40,20 @@ output_file = os.path.join(results_folder, f"biprime_comp_ratio_maxpow_{maxpow}.
 
 # Initialize the CSV file and write the header
 with open(output_file, "w", newline="") as csvfile:
-    fieldnames = ["m", "total_var", "n_known_bits", *["r_" + str(i+1) for i in range(2)], "compression_ratio", "time_taken"]
+    fieldnames = [
+        "m",
+        "total_var",
+        "n_known_bits",
+        *["r_" + str(i + 1) for i in range(2)],
+        "compression_ratio",
+        "time_taken",
+    ]
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
 
 # Begin the main loop with tqdm progress bar
 start_time_program = time.time()
 for m in tqdm(biprimes, desc="Processing biprimes", unit=" biprime"):
-
     vqf = SpaceEfficientVQF(m)
 
     total_var = len(vqf.p_bits) + len(vqf.q_bits)
@@ -70,15 +77,15 @@ for m in tqdm(biprimes, desc="Processing biprimes", unit=" biprime"):
             "m": m,
             "total_var": total_var,
             "n_known_bits": n_known_bits,
-            **{"r_" + str(i+1): r for i, r in enumerate(r_vals)},
+            **{"r_" + str(i + 1): r for i, r in enumerate(r_vals)},
             "compression_ratio": compression_ratio,
-            "time_taken": time.time() - start_time_m
+            "time_taken": time.time() - start_time_m,
         }
 
         writer.writerow(row_data)
 
     # Print data to the screen
-    #print(f"m: {m}, total_var: {total_var}, n_known_bits: {n_known_bits}, compression_ratio: {compression_ratio}, time_taken: {row_data['time_taken']:.2f} seconds")
+    # print(f"m: {m}, total_var: {total_var}, n_known_bits: {n_known_bits}, compression_ratio: {compression_ratio}, time_taken: {row_data['time_taken']:.2f} seconds")
 
 # Calculate total time since the beginning of the program
 total_time = time.time() - start_time_program
