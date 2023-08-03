@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repository contains the code for the Space-Efficient Variational Quantum Factoring (Space-Efficient VQF) algorithm. It is a modified version of the regular VQF algorithm, designed to use less space while maintaining similar performance. This work is a continuation of the original work done by Michal Stechly on the ![VQF repository](https://github.com/mstechly/vqf).
+This repository contains the code for the Space-Efficient Variational Quantum Factoring (Space-Efficient VQF) algorithm. It is a modified version of the regular VQF algorithm, designed to use less space while maintaining similar performance. This work is a continuation of the original work done by Michal Stechly on the [VQF repository](https://github.com/mstechly/vqf).
 
 ## Installation
 
