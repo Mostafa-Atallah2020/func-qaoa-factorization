@@ -82,7 +82,7 @@ class SpaceEfficientVQF:
             if c != 0:
                 c = Clause(c)
                 n_pq_vars = len(c.pq_part.free_symbols)
-                if n_pq_vars <= 12:
+                if n_pq_vars <= 16:
                     table = c.reduce_space().remove_carry_bits()
                     bits = table.bits
                     self.selected_clauses.append(c)
