@@ -3,6 +3,29 @@ from qiskit import Aer, transpile
 from tabulate import tabulate
 
 
+def get_tuples(x_list, y_list):
+    if len(x_list) != len(y_list):
+        raise ValueError("The two lists must have the same length.")
+
+    return set(zip(x_list, y_list))
+
+
+def keep_max_y_coordinate(tuples_set):
+    # Create a dictionary to store the maximum y coordinate for each x coordinate
+    max_y_coordinates = {}
+
+    for x, y in tuples_set:
+        if x in max_y_coordinates:
+            max_y_coordinates[x] = max(max_y_coordinates[x], y)
+        else:
+            max_y_coordinates[x] = y
+
+    # Create a new set with the tuples having maximum y coordinate for each x coordinate
+    result_set = {(x, y) for x, y in tuples_set if y == max_y_coordinates[x]}
+
+    return result_set
+
+
 def statevector(qc):
     simulator = Aer.get_backend("statevector_simulator")
     result = simulator.run(transpile(qc, simulator)).result()
