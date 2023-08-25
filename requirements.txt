@@ -2,7 +2,7 @@ sympy
 numpy
 qiskit[all]
 tabulate
-rustworkx
+networkx
 symengine
 tqdm
 pandas
