@@ -1,9 +1,11 @@
 sympy
 numpy
 qiskit[all]
+qiskit-aer
 tabulate
 networkx
 symengine
 tqdm
 pandas
+jupyter
 git+https://github.com/Mostafa-Atallah2020/vqf.git#egg=vqf
