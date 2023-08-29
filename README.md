@@ -26,7 +26,7 @@ To use the code properly, follow these steps:
 
 2. Navigate to the `\examples\` directory. Inside this directory, you will find two Jupyter notebooks:
 
-    * `Effective space for VQF clauses.ipynb`: This notebook is used for generating Figure 4 in the paper. It provides examples and demonstrates the reduction of space for VQF clauses.
+    * `state preparation circuits.ipynb`: This notebook is used for generating Figure 4 in the paper. It provides examples and demonstrates the reduction of space for the clauses.
 
     * `compression ratios.ipynb`: This notebook is used for generating Figure 5 in the paper. It includes code for calculating compression ratios related to the topic of integer factorization.
 
