@@ -18,6 +18,8 @@ Additionally, make sure to install the required packages listed in `requirements
 pip install -r requirements.txt
 ```
 
+The code in this repository was developed using Python 3.11.4 on Windows 10.
+
 ## Usage
 
 To use the code properly, follow these steps:
@@ -29,10 +31,6 @@ To use the code properly, follow these steps:
     * `state preparation circuits.ipynb`: This notebook is used for generating Figure 4 in the paper. It provides examples and demonstrates the reduction of space for the clauses.
 
     * `compression ratios.ipynb`: This notebook is used for generating Figure 5 in the paper. It includes code for calculating compression ratios related to the topic of integer factorization.
-
-## System Information
-
-The code in this repository was developed using Python 3.11.4 on Windows 10.
 
 ## Contact
 
