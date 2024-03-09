@@ -44,7 +44,28 @@ class Clause:
     def __init__(self, clause) -> None:
         self.clause = clause
         self.bits = self.clause.free_symbols
+        self.terms = self.clause.args[::-1]
         self.pq_part, self.z_part = self.__split()
+        self.locality = self._get_locality()
+        self.n_cnots = self.__estimate_n_cnots()
+
+    def __estimate_n_cnots(self, type='UB'):
+        n_terms = len(self.terms)
+        k = self.locality
+        if type == 'UB':
+            return n_terms
+        elif type == 'LB':
+            return n_terms/(2*k-2)
+
+    
+    def _get_locality(self):
+        n_terms = []
+        for t in range(len(self.pq_part.args)):
+            vars = self.pq_part.args[t].free_symbols
+            n_vars = len(vars)
+            n_terms.append(n_vars)
+
+        return max(n_terms)
 
     def __table_from_expr(self, expr):
         expr = sympify(expr)
@@ -75,7 +96,7 @@ class Clause:
             *[term * z for z, term in coeff_dict.items() if str(z).startswith("z_")]
         )
         other_expr = self.clause - z_expr
-        return Clause(other_expr), Clause(z_expr)
+        return other_expr, z_expr
 
     def reduce_space(self):
         combined_table = []
