@@ -75,7 +75,7 @@ class Clause:
             *[term * z for z, term in coeff_dict.items() if str(z).startswith("z_")]
         )
         other_expr = self.clause - z_expr
-        return other_expr, z_expr
+        return Clause(other_expr), Clause(z_expr)
 
     def reduce_space(self):
         combined_table = []
