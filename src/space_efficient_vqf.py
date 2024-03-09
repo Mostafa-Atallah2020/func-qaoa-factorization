@@ -1,9 +1,14 @@
 from vqf.preprocessing import create_clauses
 
 from src import Clause, SetsGraph
-from src.clause_utils import (convert_elements_to_str, convert_to_dataframe,
-                              create_merged_dict, find_non_matching_values,
-                              get_key_by_value, merge_dictionaries)
+from src.clause_utils import (
+    convert_elements_to_str,
+    convert_to_dataframe,
+    create_merged_dict,
+    find_non_matching_values,
+    get_key_by_value,
+    merge_dictionaries,
+)
 
 
 class SpaceEfficientVQF:
