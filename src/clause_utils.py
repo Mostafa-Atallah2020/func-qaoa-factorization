@@ -1,5 +1,6 @@
 import pandas as pd
-from qiskit import Aer, transpile
+
+# from qiskit import Aer, transpile
 from tabulate import tabulate
 
 
