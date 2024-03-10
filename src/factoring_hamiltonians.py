@@ -46,6 +46,7 @@ class IsingHamiltonian:
 
         hamiltonian = sum(ising_terms)
         hamiltonian = hamiltonian.reduce()
+        return hamiltonian
 
     def __get_symbols(self, term: Mul):
         """
