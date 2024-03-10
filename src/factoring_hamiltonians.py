@@ -116,7 +116,7 @@ class FactoringHamiltonian:
     Returns:
     -------
 
-    `hamiltonian` : sympy expression
+    `hamiltonian` : `sympy` expression
         The Hamiltonian representing the factoring of the biprime `m`, as defined in eq(7) in [1].
 
 

@@ -49,15 +49,14 @@ class Clause:
         self.locality = self._get_locality()
         self.n_cnots = self.__estimate_n_cnots()
 
-    def __estimate_n_cnots(self, type='UB'):
+    def __estimate_n_cnots(self, type="UB"):
         n_terms = len(self.terms)
         k = self.locality
-        if type == 'UB':
+        if type == "UB":
             return n_terms
-        elif type == 'LB':
-            return n_terms/(2*k-2)
+        elif type == "LB":
+            return n_terms / (2 * k - 2)
 
-    
     def _get_locality(self):
         n_terms = []
         for t in range(len(self.pq_part.args)):
@@ -82,7 +81,6 @@ class Clause:
             subs_dict = dict(zip(variables, comb))
             # Substitute variables in expr and evaluate the expression
             expr_val = expr.subs(subs_dict).evalf()
-
             # Append the combination and corresponding value to the table
             table.append(comb + (expr_val,))
 
