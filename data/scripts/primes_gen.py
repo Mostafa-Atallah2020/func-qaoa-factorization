@@ -5,7 +5,7 @@ import time
 
 import numpy as np
 
-sys.path.append(f"./../")
+sys.path.append(f"./../../")
 
 
 def is_prime_miller_test(n):
