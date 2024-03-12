@@ -9,5 +9,6 @@ tqdm
 pandas
 jupyter
 black[jupyter]
+scikit-learn
 git+https://github.com/Mostafa-Atallah2020/vqf.git#egg=vqf
 
