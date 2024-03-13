@@ -37,10 +37,7 @@ if __name__ == "__main__":
             [
                 "Biprime",
                 "Number of Qubits",
-                "Number of CNOTs",
-                "Log2(Biprime)",
-                "Log2(Number of Qubits)",
-                "Log2(Number of CNOTs)",
+                "Number of CNOTs"
             ]
         )  # Header row
 
@@ -50,7 +47,7 @@ if __name__ == "__main__":
             H = FactoringHamiltonian(m).hamiltonian
             n_qubits = len(H.bits)
             n_cnots = H.n_cnots
-            result = [m, n_qubits, n_cnots, log2(m), log2(n_qubits), log2(n_cnots)]
+            result = [m, n_qubits, n_cnots]
             print("Results:")
             print(result)
             writer.writerow(result)
