@@ -1,5 +1,6 @@
 import pandas as pd
-from qiskit import Aer, transpile
+from qiskit import transpile
+from qiskit_aer import AerSimulator
 from tabulate import tabulate
 
 
@@ -27,7 +28,9 @@ def keep_max_y_coordinate(tuples_set):
 
 
 def statevector(qc):
-    simulator = Aer.get_backend("statevector_simulator")
+    qc = qc.copy()
+    qc.save_statevector()
+    simulator = AerSimulator(method="statevector")
     result = simulator.run(transpile(qc, simulator)).result()
     return result.get_statevector()
 
