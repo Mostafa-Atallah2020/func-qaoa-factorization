@@ -18,7 +18,9 @@ Additionally, make sure to install the required packages listed in `requirements
 pip install -r requirements.txt
 ```
 
-The code in this repository was developed using Python 3.11.4 on Windows 10.
+The code in this repository was originally developed using Python 3.11.4 on
+Windows 10, and has also been verified on Python 3.12.10 (Windows 11 Pro,
+build 26200) with qiskit 2.x.
 
 ## Usage
 
