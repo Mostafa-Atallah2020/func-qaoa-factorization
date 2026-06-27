@@ -1,3 +1,10 @@
+"""Generate random biprimes (m = p*q) for the factorization sweep.
+
+Samples integers log-uniformly up to a maximum bit size, finds a prime near
+each sampled value, and pairs them into biprimes. Run as a script to write the
+biprimes to a CSV.
+"""
+
 import math
 import random
 import sys
@@ -8,7 +15,15 @@ import numpy as np
 sys.path.append(f"./../")
 
 
-def is_prime_miller_test(n):
+def is_prime(n):
+    """Test whether ``n`` is prime using the Miller-Rabin primality test.
+
+    Args:
+        n: the integer to test.
+
+    Returns:
+        True if ``n`` is (almost certainly) prime, False otherwise.
+    """
     # Implementation uses the Miller-Rabin Primality Test
     # The optimal number of rounds for this test is 40
     # See http://stackoverflow.com/questions/6325576/how-many-iterations-of-rabin-miller-should-i-use-for-cryptographic-safe-primes
@@ -40,7 +55,19 @@ def is_prime_miller_test(n):
     return True
 
 
-def get_primes(max_power, num_biprimes):
+def generate_biprimes(max_power, num_biprimes):
+    """Generate biprimes whose product fits within ``2 ** max_power``.
+
+    Samples ``num_biprimes`` integers log-uniformly, finds a prime near each
+    sampled factor, pairs them, and keeps the products within the size bound.
+
+    Args:
+        max_power: maximum bit size; products are kept at most ``2 ** max_power``.
+        num_biprimes: how many candidate integers to sample.
+
+    Returns:
+        A NumPy array of ``[p, q, m]`` rows sorted by the product ``m = p*q``.
+    """
     # Choose numbers uniformly between minimal and maximal value in log scale
     int_lst = np.logspace(6, max_power, num_biprimes, base=2)
     int_lst = [int(x) for x in int_lst]
@@ -56,12 +83,12 @@ def get_primes(max_power, num_biprimes):
         n2 = random.randint(k1, k2)
 
         p1, p2 = int(n1), int(n2)
-        while not is_prime_miller_test(p1):
+        while not is_prime(p1):
             p1 += 1
-        while not is_prime_miller_test(p2):
+        while not is_prime(p2):
             p2 += 1
 
-        if p1 >= p2 and (p1 * p2) <= (2**max_pow):
+        if p1 >= p2 and (p1 * p2) <= (2**max_power):
             result = [p1, p2, p1 * p2]
             if result not in primes_lst:
                 primes_lst.append(result)
@@ -92,7 +119,7 @@ if __name__ == "__main__":
         raise ValueError(f'filename "{filename}" already exists - remove')
 
     t = time.time()
-    biprimes = get_primes(max_pow, number_of_biprimes)
+    biprimes = generate_biprimes(max_pow, number_of_biprimes)
     print(f"Computation finished ({time.time()-t} seconds)")
 
     with open(filename, "w") as csvfile:
