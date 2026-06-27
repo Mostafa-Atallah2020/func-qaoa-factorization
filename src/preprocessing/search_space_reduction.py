@@ -9,7 +9,7 @@ exposes the resulting superposition tables.
 
 Those tables define the reduced, clause-feasible search space that the reduced
 QAOA initial state is prepared over (see
-:mod:`src.qaoa.reduction`). This module runs no quantum circuit; it produces
+:mod:`src.qaoa.reduced_ansatz`). This module runs no quantum circuit; it produces
 the classical tables the circuits consume. It orchestrates the data primitives
 in :mod:`src.preprocessing.clauses`.
 """
