@@ -50,10 +50,9 @@ To use the code properly, follow these steps:
         -p 1 2 3 4 5 --seeds 5
     ```
 
-   On Windows you can use the batch wrapper `scripts/run_full_sweep.bat`. The
-   run is resumable: re-running skips configurations already present in the CSV.
-   Then open `qaoa_simulation_results.ipynb`, which loads the latest run folder
-   and regenerates every figure.
+   The run is resumable: re-running skips configurations already present in the
+   CSV. Then open `qaoa_simulation_results.ipynb`, which loads the latest run
+   folder and regenerates every figure.
 
 ## Citation
 
