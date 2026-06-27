@@ -1,19 +1,41 @@
+"""Pick a non-overlapping set of bit-groups to reduce the search space.
+
+The clause preprocessing yields several candidate bit-groups (each a set of
+``p``/``q`` bits a clause constrains, with an associated compression ratio).
+To prepare their reduced superpositions independently, the chosen groups must
+be pairwise **disjoint**: two groups that share a bit cannot both fix that
+qubit. Selecting the most-reducing disjoint groups is a maximum-(weighted-)
+independent-set problem on the "conflict graph" whose nodes are the bit-groups
+and whose edges join any two groups that intersect.
+
+This module models that conflict graph (:class:`BitSetGraph`) and extracts the
+disjoint groups that minimize the summed compression ratio. The graph also
+supports a :meth:`BitSetGraph.draw` visualization; the selection itself is a
+direct brute-force over group intersections.
+"""
+
 import itertools
 
 import matplotlib.pyplot as plt
 import networkx as nx
 
 
-class SetsGraph:
-    def __init__(self, sets_r_values) -> None:
-        """
-        Initializes a SetsGraph object.
+class BitSetGraph:
+    """Graph over bit-sets used to pick disjoint superposition tables.
+
+    Each compression ratio maps to a set of bits; those sets become the graph's
+    nodes, with edges between any two sets that intersect.
+    """
+
+    def __init__(self, sets_by_ratio) -> None:
+        """Initialize a BitSetGraph object.
 
         Args:
-            sets (list): A list of sets to be represented as nodes in the graph.
+            sets_by_ratio: maps each compression ratio to its set of bits; the
+                sets become nodes in the graph.
         """
-        self.__sets = list(sets_r_values.values())
-        self.__r_vals = list(sets_r_values.keys())
+        self.__sets = list(sets_by_ratio.values())
+        self.__ratios = list(sets_by_ratio.keys())
         self.__graph = nx.Graph()
         self.__add_nodes()
         self.__add_edges()
@@ -22,11 +44,10 @@ class SetsGraph:
         self.__get_disjoint_sets()
 
     def __get_disjoint_sets(self):
-        """
-        Finds the maximum independent set of nodes in the graph while minimizing the r_vals.
+        """Find the maximum independent set of nodes while minimizing the r_vals.
 
         Returns:
-            list: A list of sets representing the maximum independent set of nodes.
+            a list of sets representing the maximum independent set of nodes.
         """
         # Generate all possible combinations of nodes
         all_nodes = set(range(len(self.__sets)))
@@ -41,7 +62,7 @@ class SetsGraph:
 
                 r_vals = []
                 for el in nodes:
-                    r_vals.append(self.__r_vals[el])
+                    r_vals.append(self.__ratios[el])
 
                 for pair in itertools.combinations(nodes, 2):
                     set1 = self.__sets[pair[0]]
@@ -59,9 +80,7 @@ class SetsGraph:
         [self.disjoint_sets.append(self.__sets[node]) for node in max_independent_set]
 
     def draw(self):
-        """
-        Draws the graph with labeled nodes.
-        """
+        """Draw the graph with labeled nodes."""
         # Draw the graph with labeled nodes
         pos = nx.spring_layout(self.__graph)
         nx.draw(
@@ -81,17 +100,13 @@ class SetsGraph:
         plt.show()
 
     def __add_nodes(self):
-        """
-        Adds nodes to the graph and labels them with their corresponding set.
-        """
+        """Add nodes to the graph and label them with their corresponding set."""
         # Add nodes to the graph and label them with their corresponding set
         for i, s in enumerate(self.__sets):
             self.__graph.add_node(i, set=s)
 
     def __add_edges(self):
-        """
-        Adds edges to the graph between nodes that have intersecting sets.
-        """
+        """Add edges to the graph between nodes that have intersecting sets."""
         for i in range(len(self.__sets)):
             for j in range(i + 1, len(self.__sets)):
                 if self.__sets[i].intersection(self.__sets[j]):

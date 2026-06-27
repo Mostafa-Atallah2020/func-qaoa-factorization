@@ -1,17 +1,26 @@
+"""Helper functions shared across the clause-preprocessing modules.
+
+Generic utilities used while building and inspecting the clause tables: bit-row
+to binary-string conversion, dictionary merging and lookups, DataFrame
+conversion, and a convenience statevector simulation. None of these carry
+factorization logic; they support the modules in this subpackage.
+"""
+
 import pandas as pd
 from qiskit import transpile
 from qiskit_aer import AerSimulator
-from tabulate import tabulate
 
 
-def get_tuples(x_list, y_list):
-    if len(x_list) != len(y_list):
-        raise ValueError("The two lists must have the same length.")
+def keep_max_y_per_x(tuples_set):
+    """Keep, for each x, only the tuple with the maximum y.
 
-    return set(zip(x_list, y_list))
+    Args:
+        tuples_set: An iterable of (x, y) tuples.
 
-
-def keep_max_y_coordinate(tuples_set):
+    Returns:
+        A set containing, for each distinct x, the (x, y) tuple with the
+        largest y.
+    """
     # Create a dictionary to store the maximum y coordinate for each x coordinate
     max_y_coordinates = {}
 
@@ -27,7 +36,15 @@ def keep_max_y_coordinate(tuples_set):
     return result_set
 
 
-def statevector(qc):
+def simulate_statevector(qc):
+    """Run a circuit on the statevector simulator and return its statevector.
+
+    Args:
+        qc: The quantum circuit to simulate.
+
+    Returns:
+        The resulting statevector.
+    """
     qc = qc.copy()
     qc.save_statevector()
     simulator = AerSimulator(method="statevector")
@@ -36,6 +53,15 @@ def statevector(qc):
 
 
 def get_table_bin_combinations(table):
+    """Concatenate each row of a bit table into a binary string.
+
+    Args:
+        table: A DataFrame whose columns are bit values.
+
+    Returns:
+        A list of binary strings, one per row, formed by concatenating the
+        row's bit values.
+    """
     # Create a copy of the input table
     new_table = table.copy()
 
@@ -53,6 +79,14 @@ def get_table_bin_combinations(table):
 
 
 def convert_elements_to_str(input_set):
+    """Convert every element of a set to its string form.
+
+    Args:
+        input_set: The set whose elements are converted.
+
+    Returns:
+        A new set with each element replaced by ``str(element)``.
+    """
     output_set = set()
 
     for element in input_set:
@@ -62,38 +96,28 @@ def convert_elements_to_str(input_set):
 
 
 def convert_to_dataframe(data, columns=["Key", "Value"]):
-    """
-    Convert a dictionary to a DataFrame.
+    """Convert a dictionary to a DataFrame.
 
     Args:
-    -----
-
-        `data` (`dict`): The dictionary to be converted.
+        data: The dictionary to be converted.
+        columns: Column labels for the resulting key/value DataFrame.
 
     Returns:
-    --------
-
-        `pandas.DataFrame`: The resulting DataFrame.
-
+        The resulting DataFrame.
     """
     df = pd.DataFrame(data.items(), columns=columns)
     return df
 
 
 def merge_dictionaries(*dicts):
-    """
-    Merge multiple dictionaries into a single dictionary.
+    """Merge multiple dictionaries into a single dictionary.
 
     Args:
-    -----
-
-        `*dicts`: Multiple dictionaries to be merged.
+        *dicts: Multiple dictionaries to be merged.
 
     Returns:
-    --------
-
-        `dict`: Merged dictionary containing all the key-value pairs from the input dictionaries.
-
+        A merged dictionary containing all the key-value pairs from the input
+        dictionaries.
     """
     merged_dict = {}
 
@@ -104,19 +128,14 @@ def merge_dictionaries(*dicts):
 
 
 def find_non_matching_values(dictionary):
-    """
-    Find key-value pairs in a dictionary where the key is not equal to the value.
+    """Find key-value pairs where the key differs from the value.
 
     Args:
-    -----
-
-        `dictionary` (`dict`): The dictionary to search for non-matching values.
+        dictionary: The dictionary to search.
 
     Returns:
-    --------
-
-        `dict`: Dictionary containing key-value pairs where the key is not equal to the value.
-
+        A dictionary containing only the key-value pairs where the key is not
+        equal to the value.
     """
     non_matching_values = {}
 
@@ -127,38 +146,15 @@ def find_non_matching_values(dictionary):
     return non_matching_values
 
 
-def print_table(data):
-    """
-    Print a dictionary in tabular form.
-
-    Args:
-    -----
-
-        `data` (`dict`): The dictionary to be printed as a table.
-
-    """
-    # Convert dictionary to list of lists
-    table = [[key, value] for key, value in data.items()]
-
-    # Print table
-    print(tabulate(table, headers=["Key", "Value"]))
-
-
 def get_key_by_value(dictionary, value):
-    """
-    Get the key associated with a specific value in a dictionary.
+    """Get the key associated with a specific value in a dictionary.
 
     Args:
-    -----
-
-        `dictionary` (`dict`): The dictionary to search for the value.
-        `value`: The value to search for in the dictionary.
+        dictionary: The dictionary to search.
+        value: The value to look up.
 
     Returns:
-    --------
-
-        Key associated with the specified value, or None if the value is not found in the dictionary.
-
+        The key associated with the value, or None if the value is not found.
     """
     for key, val in dictionary.items():
         if val == value:
@@ -167,33 +163,23 @@ def get_key_by_value(dictionary, value):
 
 
 def create_merged_dict(dict1, dict2):
-    """
-    Create a new dictionary by merging values from two dictionaries.
+    """Build a dictionary mapping dict1's values to dict2's values by shared key.
 
-    The function takes two dictionaries as input and returns a new dictionary
-    where the keys are the values from the first dictionary and the values are
-    the corresponding values from the second dictionary.
+    For each key, the value from ``dict1`` becomes the new key and the value
+    from ``dict2`` becomes the new value.
 
     Args:
-    -----
-
-        `dict1` (`dict`): The first dictionary.
-        `dict2` (`dict`): The second dictionary.
+        dict1: The first dictionary (supplies the new keys).
+        dict2: The second dictionary (supplies the new values).
 
     Returns:
-    --------
-
-        `dict`: A new dictionary with merged values.
+        A new dictionary with the merged values.
 
     Examples:
-    ---------
-
         >>> dict1 = {'apple': 'fruit', 'carrot': 'vegetable', 'banana': 'fruit'}
         >>> dict2 = {'fruit': 'red', 'vegetable': 'orange'}
-        >>> merged_dict = create_merged_dict(dict1, dict2)
-        >>> merged_dict
+        >>> create_merged_dict(dict1, dict2)
         {'fruit': 'red', 'vegetable': 'orange'}
-
     """
     merged_dict = {}
     for key, value in dict1.items():
