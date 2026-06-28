@@ -1,0 +1,102 @@
+[
+  {
+    "biprimes": [
+      15,
+      21,
+      35,
+      77
+    ],
+    "multipliers": [
+      "mcx"
+    ],
+    "reps": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "variants": [
+      "uniform",
+      "reduced"
+    ],
+    "seeds": 5,
+    "maxiter": 150,
+    "outdir": "results",
+    "run_name": "qaoa_sweep_full",
+    "resume": null
+  },
+  {
+    "biprimes": [
+      15,
+      21,
+      35,
+      77
+    ],
+    "multipliers": [
+      "rgqft"
+    ],
+    "reps": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "variants": [
+      "uniform",
+      "reduced"
+    ],
+    "seeds": 5,
+    "maxiter": 150,
+    "outdir": "results",
+    "run_name": "qaoa_sweep_full",
+    "resume": null
+  },
+  {
+    "biprimes": [
+      15,
+      21,
+      35,
+      77
+    ],
+    "multipliers": [
+      "hrs"
+    ],
+    "reps": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "variants": [
+      "uniform",
+      "reduced"
+    ],
+    "seeds": 5,
+    "maxiter": 150,
+    "outdir": "results",
+    "run_name": "qaoa_sweep_full",
+    "resume": null
+  },
+  {
+    "biprimes": [
+      35
+    ],
+    "multipliers": [
+      "hrs"
+    ],
+    "reps": [
+      5
+    ],
+    "variants": [
+      "reduced"
+    ],
+    "seeds": 5,
+    "maxiter": 150,
+    "outdir": "results",
+    "run_name": "qaoa_sweep_full",
+    "resume": null
+  }
+]
